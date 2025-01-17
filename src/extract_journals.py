@@ -32,7 +32,7 @@ class ExtractJournals:
         pass
 
     @staticmethod
-    def extract_text(input_file: str, output_path: str, ignore: list[int] = [], delete_existing=False):
+    def extract_text(input_file: str, output_path: str, ignore: list[int] = [], delete_existing=False) -> list[str]:
         body: str = ""
 
         if delete_existing:
@@ -70,6 +70,12 @@ class ExtractJournals:
 
         for ignorefile_idx in ignore:
             os.unlink(os.path.join(output_path, f"{ignorefile_idx}.html"))
+
+        extracted_files: list[str] = []
+        for f in os.listdir(output_path):
+            if os.path.isfile(os.path.join(output_path, f)):
+                extracted_files.append(os.path.join(output_path, f))
+        return extracted_files
 
     @staticmethod
     def delete_output_folder(path: str):
