@@ -31,8 +31,11 @@ class ExtractJournals:
         pass
 
     @staticmethod
-    def extract_text(input_file: str, output_path: str, ignore: list[int] = []):
+    def extract_text(input_file: str, output_path: str, ignore: list[int] = [], delete_existing=False):
         body: str = ""
+
+        if delete_existing:
+            ExtractJournals.delete_output_folder(output_path)
 
         # read html file and extract body
         with open(input_file) as file:
@@ -46,8 +49,6 @@ class ExtractJournals:
         num_h1 = sum(1 for _ in re.finditer("<h1", body))
         curr_match = 1
         for match in re.finditer("<h1", body):
-            if curr_match in ignore:
-                continue
             startpos = endpos
             endpos = match.span()[0]
             if startpos == -1:
@@ -66,7 +67,19 @@ class ExtractJournals:
                     output_path, f"{curr_match + 1}.html", as_html(title, content))
 
             curr_match += 1
-        pass
+        for ignorefile_idx in ignore:
+            os.unlink(os.path.join(output_path, f"{ignorefile_idx}.html"))
+
+    @staticmethod
+    def delete_output_folder(path: str):
+        if os.path.exists(path) == False:
+            return
+        for root, dirs, files, in os.walk(path):
+            for f in files:
+                filepath = os.path.join(root, f)
+                os.remove(filepath)
+        os.removedirs(path)
+        print(f"removed {path}")
 
     @staticmethod
     def write_file(path: str, name: str, content: str):
