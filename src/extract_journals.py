@@ -8,6 +8,7 @@ def as_html(title, body):
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
 <title>{title}</title>
 </head>
 <body>
