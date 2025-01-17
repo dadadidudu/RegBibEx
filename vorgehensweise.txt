@@ -2,3 +2,4 @@ DOCX zu HTML konvertiert (Word: Save as...)
 Python aufgesetzt:
 	venv mit BeautifulSoup (parser library) und lxml im Hintergrund (schneller XML Parser) für später
 Text aufgeteilt auf ein HTML pro Publikation (ein h1 ist eine Publikation)
+Encodings getestet - <meta http-equiv=Content-Type content="text/html; charset=windows-1252"> im Header ist im Browser lesbar. UTF-8 Konvertierung ist also nicht nötig.
