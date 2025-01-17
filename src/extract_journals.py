@@ -45,7 +45,6 @@ class ExtractJournals:
         # find all h1 and write them as seperate html files
         startpos = -1
         endpos = -1
-        title = "asd"
         num_h1 = sum(1 for _ in re.finditer("<h1", body))
         curr_match = 1
         for match in re.finditer("<h1", body):
@@ -58,15 +57,16 @@ class ExtractJournals:
                 content = body[startpos:endpos-1]
                 # surround with html tags
                 ExtractJournals.write_file(
-                    output_path, f"{curr_match}.html", as_html(title, content))
+                    output_path, f"{curr_match}.html", as_html(f"Journal {curr_match}", content))
 
             if curr_match + 1 == num_h1:
                 # last:
                 content = body[endpos:]
                 ExtractJournals.write_file(
-                    output_path, f"{curr_match + 1}.html", as_html(title, content))
+                    output_path, f"{curr_match + 1}.html", as_html(f"Journal {curr_match}", content))
 
             curr_match += 1
+
         for ignorefile_idx in ignore:
             os.unlink(os.path.join(output_path, f"{ignorefile_idx}.html"))
 
