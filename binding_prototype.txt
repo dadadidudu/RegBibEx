@@ -4,9 +4,9 @@ options:
 	flags:gm
 defaults:
 	JAHR:\d{4}
-	ORT:.*?
-	PUBLICATION:.*?
-	TITLE:.*?
+	ORT:.*
+	PUBLICATION:.*
+	TITLE:.*
 4:
 	replace:–=-
 	h1.a.span:{{PUBLICATION}}
