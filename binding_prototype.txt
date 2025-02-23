@@ -1,5 +1,6 @@
 options:
 	dotall:TRUE
+	replace:–=-
 defaults:
 	JAHR:\d{4}
 	ORT:.*
