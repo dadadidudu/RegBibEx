@@ -1,4 +1,4 @@
-from binding.regex_variable_binder import RegexVariableBinder
+from src.binding.regex_variable_binder import RegexVariableBinder
 from src.extract_journals import ExtractJournals
 from src.journal import Journal
 
@@ -29,5 +29,10 @@ s = [
 bla0 = a.apply(s[0], r"\d. {{TITLE}} ([–-]) ?{{.* as ORT}}, {{\d{4} as JAHR}}")
 bla1 = a.apply(s[1], r"\d. {{TITLE}} ([–-]) ?{{.* as ORT}}, {{\d{4} as JAHR}}")
 bla2 = a.apply(s[2], r"\d. {{TITLE}} ([–-]) ?{{.* as ORT}}, {{\d{4} as JAHR}}")
+
+# --- test journalbinder
+j = Journal("journals/4.conv.html")
+jc = j.get_text_at("p.span")
+print(jc)
 
 print("done")
