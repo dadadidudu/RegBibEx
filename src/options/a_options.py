@@ -1,15 +1,28 @@
+from abc import ABC
+
 OPTIONS_SECTION: str = "options"
 DEFAULTS_SECTION: str = "defaults"
 SECTION_DELIMITER: str = ":"
 KEY_VALUE_SPLITTER: str = ":"
 
-class BindingOptions:
+class AOptions(ABC):
+	"""
+	This class provides a standardised options definition in plaintext.
+	The root objects 'options' and 'defaults' are defined by default.
+	Furthermore, individual option objects can be defined by their own key.
+	"""
 
 	options: dict[str,str] = {}
 	defaults: dict[str,str] = {}
 	individual_opts: dict[str, dict[str, str]] = {}
 
 	def __init__(self, options_file: str):
+		"""
+		Parses the given options file.
+			Parameters:
+				options_file: the path to the option file
+		"""
+
 		option_lines: list[str]
 		with open(options_file) as f:
 			option_lines = f.readlines()
@@ -43,5 +56,9 @@ class BindingOptions:
 		self.individual_opts[optionsection_name] = {}
 		return optionsection_name
 	
-	def get_options_for(self, index: str) -> dict[str, str]:
-		return self.individual_opts[index]
+	def get_individual_options(self, key: str) -> dict[str, str]:
+		"""
+		Returns an object that is defined at the root of the options file in the form of:
+		<KEY>:\\n\\t<INDIVIDUAL_KEY>:<VALUE>
+		"""
+		return self.individual_opts[key]

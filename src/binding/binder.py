@@ -1,16 +1,16 @@
-from .options.binding_options import BindingOptions
 import re
+from .binder_options import BinderOptions
 
 KEYWORD_VARIABLE_DEFINITION = " as " # REGEX as VARIABLE
 
 class Binder:
 
-	options: BindingOptions
+	options: BinderOptions
 	variables: dict[str, str]
 	variable_finder_pattern: re.Pattern
 
 	def __init__(self, optionsfile: str):
-		self.options = BindingOptions(optionsfile)
+		self.options = BinderOptions(optionsfile)
 		self.variable_finder_pattern = re.compile(r"{{(.*?)}}") # finds {{VARIABLE}} and {{REGEX as VARIABLE}}
 	
 	def apply(self, string: str, regex_with_bindings: str) -> dict[str, str]:
