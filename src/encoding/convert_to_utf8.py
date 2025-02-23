@@ -1,6 +1,7 @@
 import os
-from chardet import detect
+# from chardet import detect
 
+# currently unused
 
 def get_encoding_with_chardet(file):
     """ get file encoding type """
