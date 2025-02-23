@@ -1,7 +1,6 @@
 from src.encoding import convert_to_utf8
 from src.extract_journals import ExtractJournals
-import os
-from journal import Journal
+from src.journal import Journal
 
 files = "./input/ucb_2024.htm"
 output_dir = "journals"
