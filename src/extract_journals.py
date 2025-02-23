@@ -19,20 +19,14 @@ def as_html(title, body):
 
 
 class ExtractJournals:
-    @staticmethod
-    def extract_html(html_file_path: str, output_path: str):
-        html = None
-        with open(html_file_path) as file:
-            content = file.read()
-            html = BeautifulSoup(content, features="lxml")
-        body: Tag = html.body  # type: ignore
-        all_headers = body.find_all("h1")
-        for h1 in all_headers:
-            pass
-        pass
 
     @staticmethod
     def extract_text(input_file: str, output_path: str, ignore: list[int] = [], delete_existing=False) -> list[str]:
+        '''
+        Extracts the body of the given journal HTML input file (path, name, ext) to the given output path.
+        Optionally ignores the journals at the iven ignore indices, and optionally deletes the excisting output path, if it exists.
+        '''
+
         body: str = ""
 
         if delete_existing:
@@ -78,7 +72,8 @@ class ExtractJournals:
         return extracted_files
 
     @staticmethod
-    def delete_output_folder(path: str):
+    def delete_output_folder(path: str) -> None:
+        "Deletes the given path and all its subfiles and subfolders."
         if os.path.exists(path) == False:
             return
         for root, dirs, files, in os.walk(path):
@@ -89,13 +84,18 @@ class ExtractJournals:
         print(f"removed {path}")
 
     @staticmethod
-    def write_file(path: str, name: str, content: str):
-        os.makedirs(path, exist_ok=True)
-        with open(f"{path}/{name}", "w") as f:
-            f.write(content)
+    def write_file(path: str, name: str, content: str) -> None:
+        "Writes the given content to a new file with the given path and name. Path can be ommitted"
+        if (path != ""):
+            os.makedirs(path, exist_ok=True)
+            with open(f"{path}/{name}", "w") as f:
+                f.write(content)
+        else:
+            with open(f"{name}", "w", encoding="utf-8") as f:
+                f.write(content)
 
     @staticmethod
-    def get_text_between_tags(tag: str, content: str):
+    def get_text_between_tags(tag: str, content: str) -> str:
         start = content.find(f"<{tag}")
         end = content.rfind(f"</{tag}>") + len(f"</{tag}>")
         text = content[start:end]
