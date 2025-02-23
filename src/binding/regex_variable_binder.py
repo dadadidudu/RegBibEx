@@ -1,16 +1,28 @@
 import re
 from .binder_options import BinderOptions
 
-KEYWORD_VARIABLE_DEFINITION = " as " # REGEX as VARIABLE
+KEYWORD_VARIABLE_DEFINITION = " as " # {{REGEX as VARIABLE}}
 
-class Binder:
+class RegexVariableBinder:
+	"""
+	Binds variables defined in RegularExpressions as python variables.
+	E.g.: \d.: {{TITLE}}, {{\d{4} as YEAR}} will bind the contents of the string "1.: My Film Title, 1999" to the specified variables: TITLE: "My Film Title", YEAR: "1999".
+	"""
 
 	options: BinderOptions
 	variables: dict[str, str]
 	variable_finder_pattern: re.Pattern
 
-	def __init__(self, optionsfile: str):
-		self.options = BinderOptions(optionsfile)
+	def __init__(self, optionsfile: str = "", binderoptions: BinderOptions = None):
+		"""
+		Suppy either a path to an options file for the binder, or already existing BinderOptions to be used for this Binder. If none are supplied, only {{REGEX as VARIABLE}} definitions will work.
+		"""
+		if (optionsfile != ""):
+			self.options = BinderOptions(optionsfile)
+		elif (binderoptions is not None):
+			self.options = BinderOptions(binderoptions)
+		else:
+			print(r"RegexVariableBinder initialised without any options. Only {{REGEX as VARIABLE}} definitions possible.")
 		self.variable_finder_pattern = re.compile(r"{{(.*?)}}") # finds {{VARIABLE}} and {{REGEX as VARIABLE}}
 	
 	def apply(self, string: str, regex_with_bindings: str) -> dict[str, str]:
@@ -39,8 +51,11 @@ class Binder:
 				variable = split[1]
 			else:
 				# only {{VARIABLE}}
-				variable = var
-				regex = self.options.defaults[var]
+				if (self.options is not None):
+					variable = var
+					regex = self.options.defaults[var]
+				else:
+					raise r"Cannot use RegexVariableBinder with {{VARIABLE}} syntax: Options are missing."
 
 			variables_present.append(variable)
 			new = r"(?P<" + variable + ">" + regex + ")"

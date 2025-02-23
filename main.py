@@ -1,4 +1,4 @@
-from src.binding.binder import Binder
+from binding.regex_variable_binder import RegexVariableBinder
 from src.extract_journals import ExtractJournals
 from src.journal import Journal
 
@@ -18,7 +18,7 @@ output_dir = "journals"
 # print(j.as_htmltext())
 
 # --- test binding
-a = Binder("binding_prototype.txt")
+a = RegexVariableBinder(optionsfile="binding_prototype.txt")
 j = Journal("journals/4.conv.html")
 s = [
 	"1. Das sprachliche Bild der Bernsteinstraße-Region – Szombathely, 1994",
