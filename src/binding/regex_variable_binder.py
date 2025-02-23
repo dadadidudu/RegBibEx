@@ -55,7 +55,7 @@ class RegexVariableBinder:
 					variable = var
 					regex = self.options.defaults[var]
 				else:
-					raise r"Cannot use RegexVariableBinder with {{VARIABLE}} syntax: Options are missing."
+					raise Exception(r"Cannot use RegexVariableBinder with {{VARIABLE}} syntax: Options are missing.")
 
 			variables_present.append(variable)
 			new = r"(?P<" + variable + ">" + regex + ")"
@@ -64,6 +64,8 @@ class RegexVariableBinder:
 		# aapply the converted regex
 		compiled_regex = re.compile(regex_with_bindings, re.MULTILINE)
 		r = re.search(compiled_regex, string)
+		if (r is None):
+			raise Exception("Regex yielded no results")
 		
 		# generate return mapping
 		mappings: dict[str, str] = {}

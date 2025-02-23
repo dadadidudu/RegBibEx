@@ -39,5 +39,6 @@ class Journal:
             resultset = resultset_for_tag
         resulttext: list[str] = []
         for rs in resultset:
-            resulttext.append(rs.get_text(strip=True))
+            text = rs.get_text(strip=True)
+            resulttext.append(text)
         return resulttext
