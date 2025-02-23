@@ -1,7 +1,12 @@
+options:
+	dotall:TRUE
+defaults:
+	JAHR:\d{4}
+	ORT:.*
+	PUBLICATION:.*
 4:
 	replace:–=-
 	h1.a.span:{{PUBLICATION}}
 	p.span:\d. (.*) ([–-]) ?{{ORT}}, ({{JAHR}})
 5:
 	h1.a.span:{{PUBLICATION}}
-	
