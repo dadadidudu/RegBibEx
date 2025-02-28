@@ -8,6 +8,7 @@ class JournalBinder:
 	journal: Journal
 	binder: RegexVariableBinder
 	options: BinderOptions
+	publications: list[dict[str, str]] = []
 
 	def __init__(self, journal: Journal, options: BinderOptions):
 		self.journal = journal
@@ -26,8 +27,6 @@ class JournalBinder:
 
 		if selector_pattern_map is None:
 			raise Exception("No selectors defined for " + self.journal.file)
-		
-		fields: dict[str, str] = {}
 
 		for selector in selector_pattern_map:
 			if selector == "replace":
@@ -39,7 +38,9 @@ class JournalBinder:
 
 			for text in texts_at_selector:
 				bound_fields = self.__do_replaces_and_bind(text, pattern)
-				fields.update(bound_fields)
+				if (len(bound_fields) > 0):
+					self.__update_publications_fields(bound_fields)
+				
 			
 			# now we should have every defined bibtex field
 			pass
@@ -72,3 +73,27 @@ class JournalBinder:
 				text_to_replace_in = text_to_replace_in.replace(replace_from_to[0], replace_from_to[1])
 				pass
 		return text_to_replace_in
+	
+	def __update_publications_fields(self, new_fields: dict[str, str]):
+		if len(self.publications) == 0:
+			self.publications.append(new_fields)
+			return
+		
+		new_publications = list(self.publications)
+		# TODO hier gehts weiter
+		for pub in self.publications:
+
+			clone_and_insert_fields = False
+			for newfield in new_fields:
+				if newfield not in pub:
+					pub[newfield] = new_fields.get(newfield)
+				else:
+					clone_and_insert_fields = True
+
+			if (clone_and_insert_fields):
+				cloned_pub = dict(pub)
+				for field in new_fields:
+					cloned_pub[field] = new_fields.get(field)
+				new_publications.append(cloned_pub)
+
+		self.publications = new_publications
