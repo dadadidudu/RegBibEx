@@ -1,6 +1,6 @@
 options:
 	dotall:FALSE
-	replace:–=-,\n= ,
+	replace:–=-,\n= ,�=-,�=ß
 	flags:gm
 defaults:
 	JAHR:\d{4}
