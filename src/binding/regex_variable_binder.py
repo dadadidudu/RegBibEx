@@ -80,7 +80,8 @@ class RegexVariableBinder:
 		compiled_regex = re.compile(regex_with_bindings, re.MULTILINE)
 		r = re.search(compiled_regex, string)
 		if (r is None):
-			raise Exception("Regex yielded no results")
+			print("Regex yielded no results")
+			return
 		
 		# generate return mapping
 		mappings: dict[str, str] = {}

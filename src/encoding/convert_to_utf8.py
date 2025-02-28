@@ -1,5 +1,4 @@
 import os
-# from chardet import detect
 
 # currently unused
 
@@ -7,6 +6,7 @@ def get_encoding_with_chardet(file):
     """ get file encoding type """
     with open(file, 'rb') as f:
         rawdata = f.read()
+    from chardet import detect
     return detect(rawdata)['encoding']
 
 
@@ -26,3 +26,6 @@ def convert_to_utf8(srcfile):
         print('Decode Error')
     except UnicodeEncodeError:
         print('Encode Error')
+
+def convert_string_to_utf8(srcstring) -> str:
+    pass

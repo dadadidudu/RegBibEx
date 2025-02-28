@@ -36,8 +36,8 @@ print(bla2)
 
 # --- test journal binder#
 opts = BinderOptions("binding_prototype.txt")
+j2 = Journal("journals/4.conv.html")
 jb = JournalBinder(j, opts)
-jb.get_options_for_file()
-
+jb.get_bibtex()
 
 print("done")
