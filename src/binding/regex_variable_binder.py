@@ -2,28 +2,36 @@ import re
 from .binder_options import BinderOptions
 
 KEYWORD_VARIABLE_DEFINITION = " as " # {{REGEX as VARIABLE}}
-valid_var_name = re.compile(r"([A-Z][a-z][0-9]_)+")
+valid_var_name = re.compile(r"([A-Za-z0-9_])+", re.S)
 
 class RegexVariableBinder:
 	"""
 	Binds variables defined in RegularExpressions as python variables.
-	E.g.: \d.: {{TITLE}}, {{\d{4} as YEAR}} will bind the contents of the string "1.: My Film Title, 1999" to the specified variables: TITLE: "My Film Title", YEAR: "1999".
+	E.g.: \\d.: {{TITLE}}, {{\\d{4} as YEAR}} will bind the contents of the string "1.: My Film Title, 1999" to the specified variables: TITLE: "My Film Title", YEAR: "1999".
 	"""
 
-	options: BinderOptions
-	variables: dict[str, str]
+	defaults: dict[str,str] = None
 	variable_finder_pattern: re.Pattern
 
-	def __init__(self, optionsfile: str = "", binderoptions: BinderOptions = None):
+	def __init__(self, defaults: dict[str,str] = None, optionsfile: str = "", binderoptions: BinderOptions = None):
 		"""
-		Suppy either a path to an options file for the binder, or already existing BinderOptions to be used for this Binder. If none are supplied, only {{REGEX as VARIABLE}} definitions will work.
+		Suppy either hardcoded defaults, a path to an options file for the binder, or already existing BinderOptions to be used for this Binder (in this priority).
+		If none are supplied, only {{REGEX as VARIABLE}} definitions will work.
 		"""
-		if (optionsfile != ""):
-			self.options = BinderOptions(optionsfile)
+
+		if isinstance(defaults, dict):
+			self.defaults = defaults
+		elif defaults is not None:
+			raise Exception("Passed default object is not a dictionary.")
+		elif (optionsfile != ""):
+			options = BinderOptions(optionsfile)
+			self.defaults = options.defaults
 		elif (binderoptions is not None):
-			self.options = BinderOptions(binderoptions)
+			options = BinderOptions(binderoptions)
+			self.defaults = options.defaults
 		else:
 			print(r"RegexVariableBinder initialised without any options. Only {{REGEX as VARIABLE}} definitions possible.")
+
 		self.variable_finder_pattern = re.compile(r"{{(.*?)}}") # finds {{VARIABLE}} and {{REGEX as VARIABLE}}
 	
 	def apply(self, string: str, regex_with_bindings: str) -> dict[str, str]:
@@ -54,13 +62,13 @@ class RegexVariableBinder:
 				variable = split[1]
 			else:
 				# only {{VARIABLE}}
-				if (self.options is not None):
+				if (self.defaults is not None):
 					variable = varDef
-					regex = self.options.defaults[varDef]
+					regex = self.defaults[varDef]
 				else:
 					raise Exception(r"Cannot use RegexVariableBinder with {{VARIABLE}} syntax: Defaults are missing.")
 
-			if valid_var_name.match(variable) is None:
+			if valid_var_name.search(variable) is None:
 				raise Exception(f"Invalid variable name: {variable}. Variable name must be python compatible.")
 			if regex is None:
 				raise Exception(f"No regex definition for {variable} in defaults.")
