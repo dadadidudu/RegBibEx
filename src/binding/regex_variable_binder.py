@@ -27,8 +27,7 @@ class RegexVariableBinder:
 			options = BinderOptions(optionsfile)
 			self.defaults = options.defaults
 		elif (binderoptions is not None):
-			options = BinderOptions(binderoptions)
-			self.defaults = options.defaults
+			self.defaults = binderoptions.defaults
 		else:
 			print(r"RegexVariableBinder initialised without any options. Only {{REGEX as VARIABLE}} definitions possible.")
 

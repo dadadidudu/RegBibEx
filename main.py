@@ -1,3 +1,5 @@
+from src.binding.binder_options import BinderOptions
+from src.journal_binder import JournalBinder
 from src.binding.regex_variable_binder import RegexVariableBinder
 from src.extract_journals import ExtractJournals
 from src.journal import Journal
@@ -31,5 +33,11 @@ bla2 = a.apply(jc[2], r"\d. {{TITLE}} ([–-]?) ?{{.*? as ORT}}, {{\d{4} as JAHR
 print(bla0)
 print(bla1)
 print(bla2)
+
+# --- test journal binder#
+opts = BinderOptions("binding_prototype.txt")
+jb = JournalBinder(j, opts)
+jb.get_options_for_file()
+
 
 print("done")

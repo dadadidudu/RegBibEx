@@ -3,11 +3,12 @@ from os import path
 
 class Journal:
 
+    file: str
     raw_journal: bs4.BeautifulSoup = None
 
-    def __init__(self, jorunal_file: str):
-        pth = path.join(jorunal_file)
-        with open(pth, "r", encoding="cp1252") as file:
+    def __init__(self, journal_file: str):
+        self.file = journal_file
+        with open(journal_file, "r", encoding="cp1252") as file:
             content = file.read()
             self.raw_journal = bs4.BeautifulSoup(content, features="lxml")
 

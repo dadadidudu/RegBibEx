@@ -56,9 +56,10 @@ class AOptions(ABC):
 		self.individual_opts[optionsection_name] = {}
 		return optionsection_name
 	
-	def get_individual_options(self, key: str) -> dict[str, str]:
+	def get_individual_options(self, key: str) -> dict[str, str] | None:
 		"""
 		Returns an object that is defined at the root of the options file in the form of:
-		<KEY>:\\n\\t<INDIVIDUAL_KEY>:<VALUE>
+		<KEY>:\\n\\t<INDIVIDUAL_KEY>:<VALUE>.
+		Returns None if the key hasn't been defined.
 		"""
-		return self.individual_opts[key]
+		return self.individual_opts.get(key, None)
