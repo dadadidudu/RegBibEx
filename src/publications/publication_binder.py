@@ -9,7 +9,7 @@ class PublicationBinder:
 	publication: Publication
 	binder: RegexVariableBinder
 	options: BinderOptions
-	publications: list[Bibtex] = []
+	bibtex_list: list[Bibtex] = []
 
 	def __init__(self, publication: Publication, options: BinderOptions):
 		self.publication = publication
@@ -41,34 +41,27 @@ class PublicationBinder:
 				new_fields = self.__do_replaces_and_bind(text, pattern)
 				if (len(new_fields) < 1):
 					continue
+
+				new_publication: Bibtex = None
 				
-				if (len(self.publications) > 0):
+				if (len(self.bibtex_list) > 0):
 					# update newly created publication with existing fields (assumes all fields are in all publications)
-					old_pub_to_update_new_from = self.publications[0]
+					old_pub_to_update_new_from = self.bibtex_list[0]
 					new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
 					new_publication.set_all_fields(new_fields)
+
 				else:
 					# create  a new publication
 					new_publication = Bibtex(new_fields)
-
-				# # update newly created publication with existing fields (assumes all fields are in all publications)
-				# if (len(self.publications) > 0):
-				# 	old_pub_to_update_new_from = self.publications[0]
-				# 	for old_field in old_pub_to_update_new_from.get_current_fields():
-				# 		old_value = new_publication.get_field_value(old_field)
-				# 		if (old_value == ""):
-				# 			new_publication.set_field(old_field, old_value)
-
-				# update existing publications with new fields
-				self.__update_existing_publications(new_fields)
 				
 				# add new publication to existing publications
-				self.publications.append(new_publication)
+				self.bibtex_list.append(new_publication)
 			
 			# now we should have every defined bibtex field
 			pass
-		
-		return self.publications
+
+		self.__remove_duplicates_and_incompletes()
+		return self.bibtex_list
 				
 	
 	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> dict[str, str]:
@@ -102,32 +95,14 @@ class PublicationBinder:
 				pass
 		return text_to_replace_in
 	
-	def __update_existing_publications(self, new_fields: dict[str, str]):
-		for pub in self.publications:
-			pass
-
-
-		# 	clone_and_insert_fields: list[str] = list(pub.keys())
-		# 	for newfield in new_fields:
-		# 		if newfield not in pub:
-		# 			pub[newfield] = new_fields.get(newfield)
-		# 		else:
-		# 			clone_and_insert_fields.append(newfield)
-
-		# 	# if (clone_and_insert_fields):
-		# 	# 	cloned_pub = dict(pub)
-		# 	# 	for field in new_fields:
-		# 	# 		cloned_pub[field] = new_fields.get(field)
-		# 	# 	new_publications.append(cloned_pub)
-
-		# 	if len(clone_and_insert_fields) < 1:
-		# 		continue
-
-		# 	new_object: dict[str,str] = {}
-		# 	for addfield in clone_and_insert_fields:
-		# 		new_object[addfield] = pub[addfield]
-		# 	for newfield in new_fields:
-		# 		new_object[newfield] = pub[newfield]
-		# 	new_publications.append(new_object)
-			
-		# self.publications.append(new_publications)
+	def __remove_duplicates_and_incompletes(self):
+		# incompletes
+		all_current_fields = set()
+		for b in self.bibtex_list:
+			all_current_fields.update(b.get_current_fields())
+		
+		for b in self.bibtex_list:
+			curr_fields = b.get_current_fields()
+			if (all_current_fields != curr_fields):
+				self.bibtex_list.remove(b)
+		

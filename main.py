@@ -7,17 +7,17 @@ from src.publications.publication import Publication
 files = "./input/ucb_2024.htm"
 output_dir = "journals"
 # --- extract publications to own html
-print("extracting")
-files = ExtractPublications.extract_text(
-    files, output_dir, [1, 2], delete_existing=True)
-# --- convert to utf-8 for readability (only for debugging!)
-for f in files:
-	j = Publication(f)
-	j.write_to_file(f.replace(".html", ".conv.html"))
-# --- test output
-testfile = [x for x in files if "\\10.html" in x][0]
-j = Publication(testfile)
-print(j.as_htmltext())
+# print("extracting")
+# files = ExtractPublications.extract_text(
+#     files, output_dir, [1, 2], delete_existing=True)
+# # --- convert to utf-8 for readability (only for debugging!)
+# for f in files:
+# 	j = Publication(f)
+# 	j.write_to_file(f.replace(".html", ".conv.html"))
+# # --- test output
+# testfile = [x for x in files if "\\10.html" in x][0]
+# j = Publication(testfile)
+# print(j.as_htmltext())
 
 # --- test publication get text
 j = Publication(f"{output_dir}/4.conv.html")
