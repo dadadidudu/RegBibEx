@@ -1,9 +1,10 @@
+from __future__ import annotations
 
 class Bibtex:
 
 	__fields_and_values: dict[str, str] = {}
 
-	def __init__(self, clone_from = None):
+	def __init__(self, clone_from: Bibtex = None):
 		if (clone_from is not None):
 			self.__fields_and_values = dict(clone_from)
 	
@@ -25,8 +26,20 @@ class Bibtex:
 		for name, entry in field_name_and_entry_dict.items():
 			self.set_field(name, entry)
 
-	def has_all_fields_already(self, field_names: list[str]) -> bool:
+	def has_all_fields_set_already(self, field_names: set[str]) -> bool:
 		for fieldname in field_names:
 			if (self.get_field_value(fieldname) == ""):
 				return False
 		return True
+	
+	def equals(self, other: Bibtex):
+		for f, v in self.get_fields_and_values().items():
+			v_other = other.get_field_value(f)
+			if (v_other == "" or v != v_other):
+				return False
+		for f2, v2 in other.get_fields_and_values().items():
+			v_this = self.get_field_value()
+			if (v_this == "" or v2 != v_this):
+				return False
+		return True
+	

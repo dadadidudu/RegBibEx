@@ -106,3 +106,10 @@ class PublicationBinder:
 			if (all_current_fields != curr_fields):
 				self.bibtex_list.remove(b)
 		
+		# duplicates
+		for b in self.bibtex_list:
+			for b2 in [entry for entry in self.bibtex_list if entry != b]:
+				if (b.equals(b2)):
+					self.bibtex_list.remove(b)
+					break
+			pass

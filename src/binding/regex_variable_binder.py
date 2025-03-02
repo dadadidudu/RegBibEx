@@ -49,6 +49,8 @@ class RegexVariableBinder:
 		"""
 		variables_present: list[str] = []
 
+		orig_regex_input = regex_with_bindings
+
 		# convert regex with bindings to a proper regex
 		for varDef in re.findall(self.variable_finder_pattern, regex_with_bindings):
 			regex = ""
@@ -80,7 +82,7 @@ class RegexVariableBinder:
 		compiled_regex = re.compile(regex_with_bindings, re.MULTILINE)
 		r = re.search(compiled_regex, string)
 		if (r is None):
-			print("Regex yielded no results")
+			print(f"Regex {orig_regex_input} yielded no results on string {string}")
 			return
 		
 		# generate return mapping

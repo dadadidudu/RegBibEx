@@ -5,7 +5,8 @@ from src.publications.extract_publications import ExtractPublications
 from src.publications.publication import Publication
 
 files = "./input/ucb_2024.htm"
-output_dir = "journals"
+journals_output_dir = "journals"
+bibtex_output_dir = "bibtex"
 # --- extract publications to own html
 # print("extracting")
 # files = ExtractPublications.extract_text(
@@ -20,7 +21,7 @@ output_dir = "journals"
 # print(j.as_htmltext())
 
 # --- test publication get text
-j = Publication(f"{output_dir}/4.conv.html")
+j = Publication(f"{journals_output_dir}/4.conv.html")
 jc = j.get_text_at("p.span")
 print(jc)
 
@@ -36,8 +37,8 @@ print(bla2)
 
 # --- test publication binder#
 opts = BinderOptions("binding_prototype.txt")
-j2 = Publication(f"{output_dir}/4.conv.html")
+j2 = Publication(f"{journals_output_dir}/4.conv.html")
 jb = PublicationBinder(j, opts)
-jb.get_bibtex()
+btx = jb.get_bibtex()
 
 print("done")
