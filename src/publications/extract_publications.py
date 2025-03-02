@@ -1,6 +1,5 @@
 import re
 import os
-from bs4 import BeautifulSoup, Tag
 
 
 def as_html(title, body):
@@ -18,24 +17,24 @@ def as_html(title, body):
 """
 
 
-class ExtractJournals:
+class ExtractPublications:
 
     @staticmethod
     def extract_text(input_file: str, output_path: str, ignore: list[int] = [], delete_existing=False) -> list[str]:
         '''
-        Extracts the body of the given journal HTML input file (path, name, ext) to the given output path.
-        Optionally ignores the journals at the iven ignore indices, and optionally deletes the excisting output path, if it exists.
+        Extracts the body of the given publication HTML input file (path, name, ext) to the given output path.
+        Optionally ignores the publications at the iven ignore indices, and optionally deletes the excisting output path, if it exists.
         '''
 
         body: str = ""
 
         if delete_existing:
-            ExtractJournals.delete_output_folder(output_path)
+            ExtractPublications.delete_output_folder(output_path)
 
         # read html file and extract body
         with open(input_file) as file:
             content = file.read()
-            body = ExtractJournals.get_text_between_tags("div", content)
+            body = ExtractPublications.get_text_between_tags("div", content)
 
         # find all h1 and write them as seperate html files
         startpos = -1
@@ -51,14 +50,14 @@ class ExtractJournals:
             else:
                 content = body[startpos:endpos-1]
                 # surround with html tags
-                ExtractJournals.write_file(
-                    output_path, f"{curr_match}.html", as_html(f"Journal {curr_match}", content))
+                ExtractPublications.write_file(
+                    output_path, f"{curr_match}.html", as_html(f"publication {curr_match}", content))
 
             if curr_match + 1 == num_h1:
                 # last:
                 content = body[endpos:]
-                ExtractJournals.write_file(
-                    output_path, f"{curr_match + 1}.html", as_html(f"Journal {curr_match}", content))
+                ExtractPublications.write_file(
+                    output_path, f"{curr_match + 1}.html", as_html(f"publication {curr_match}", content))
 
             curr_match += 1
 

@@ -1,26 +1,26 @@
 from src.binding.binder_options import BinderOptions
-from src.journal_binder import JournalBinder
+from src.publications.publication_binder import PublicationBinder
 from src.binding.regex_variable_binder import RegexVariableBinder
-from src.extract_journals import ExtractJournals
-from src.journal import Journal
+from src.publications.extract_publications import ExtractPublications
+from src.publications.publication import Publication
 
 files = "./input/ucb_2024.htm"
 output_dir = "journals"
-# # --- extract journals to own html
-# print("extracting")
-# files = ExtractJournals.extract_text(
-#     files, output_dir, [1, 2], delete_existing=True)
-# # --- convert to utf-8 for readability (only for debugging!)
-# for f in files:
-# 	j = Journal(f)
-# 	j.write_to_file(f.replace(".html", ".conv.html"))
-# # --- test output
-# testfile = [x for x in files if "\\10.html" in x][0]
-# j = Journal(testfile)
-# print(j.as_htmltext())
+# --- extract publications to own html
+print("extracting")
+files = ExtractPublications.extract_text(
+    files, output_dir, [1, 2], delete_existing=True)
+# --- convert to utf-8 for readability (only for debugging!)
+for f in files:
+	j = Publication(f)
+	j.write_to_file(f.replace(".html", ".conv.html"))
+# --- test output
+testfile = [x for x in files if "\\10.html" in x][0]
+j = Publication(testfile)
+print(j.as_htmltext())
 
-# --- test journal get text
-j = Journal("journals/4.html")
+# --- test publication get text
+j = Publication(f"{output_dir}/4.conv.html")
 jc = j.get_text_at("p.span")
 print(jc)
 
@@ -34,10 +34,10 @@ print(bla0)
 print(bla1)
 print(bla2)
 
-# --- test journal binder#
+# --- test publication binder#
 opts = BinderOptions("binding_prototype.txt")
-j2 = Journal("journals/4.conv.html")
-jb = JournalBinder(j, opts)
+j2 = Publication(f"{output_dir}/4.conv.html")
+jb = PublicationBinder(j, opts)
 jb.get_bibtex()
 
 print("done")

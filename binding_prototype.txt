@@ -7,7 +7,7 @@ defaults:
 	ORT:.*
 	PUBLICATION:.*
 	TITLE:.*
-4:
+4.conv:
 	replace:–=-
 	h1.a.span:{{PUBLICATION}}
 	p.span:\d. {{TITLE}} ([–-]) ?{{.*? as ORT}}, {{\d{4} as JAHR}}

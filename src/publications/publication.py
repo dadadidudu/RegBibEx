@@ -1,26 +1,25 @@
 import bs4
-from os import path
 
-class Journal:
+class Publication:
 
     file: str
-    raw_journal: bs4.BeautifulSoup = None
+    raw_publication: bs4.BeautifulSoup = None
 
-    def __init__(self, journal_file: str):
-        self.file = journal_file
-        with open(journal_file, "r", encoding="cp1252") as file:
+    def __init__(self, publication_file: str):
+        self.file = publication_file
+        with open(publication_file, "r", encoding="cp1252") as file:
             content = file.read()
-            self.raw_journal = bs4.BeautifulSoup(content, features="lxml")
+            self.raw_publication = bs4.BeautifulSoup(content, features="lxml")
 
     def as_htmltext(self, pretty=True) -> str:
-        return self.raw_journal.decode(pretty, "cp1252")
+        return self.raw_publication.decode(pretty, "cp1252")
 
     def as_plaintext(self) -> str:
-        return self.raw_journal.get_text()
+        return self.raw_publication.get_text()
     
     def write_to_file(self, filename, pretty=True) -> None:
         '''
-        Writes the journal to a file as converterd unicode with the given path, name and extension. Optionally pretty prints the HTML.
+        Writes the publication to a file as converterd unicode with the given path, name and extension. Optionally pretty prints the HTML.
         '''
         with open(f"{filename}", "w", encoding="utf-8") as f:
             f.write(self.as_htmltext(pretty))
@@ -30,7 +29,7 @@ class Journal:
 
         tags = html_selector.split(".")
         first_tag = tags.pop(0)
-        resultset = self.raw_journal.html.body.find_all(first_tag)
+        resultset = self.raw_publication.html.body.find_all(first_tag)
         
         while len(tags) > 0:
             tag = tags.pop(0)
