@@ -48,7 +48,11 @@ class JournalBinder:
 				
 	
 	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> dict[str, str]:
-		# do common replace (options)
+		# do common replace (whitespace and options)
+		bind_text = bind_text.replace("\n", " ")
+		bind_text = bind_text.replace("\t", " ")
+		bind_text = bind_text.replace("\r", " ")
+		bind_text = bind_text.strip()
 		global_replaces = self.options.options.get("replace")
 		bind_text = self.__do_replaces(global_replaces, bind_text)
 
@@ -79,21 +83,31 @@ class JournalBinder:
 			self.publications.append(new_fields)
 			return
 		
-		new_publications = list(self.publications)
+		new_publications: list[dict[str, str]] = []
 		# TODO hier gehts weiter
 		for pub in self.publications:
 
-			clone_and_insert_fields = False
+			clone_and_insert_fields: list[str] = list(pub.keys())
 			for newfield in new_fields:
 				if newfield not in pub:
 					pub[newfield] = new_fields.get(newfield)
 				else:
-					clone_and_insert_fields = True
+					clone_and_insert_fields.append(newfield)
 
-			if (clone_and_insert_fields):
-				cloned_pub = dict(pub)
-				for field in new_fields:
-					cloned_pub[field] = new_fields.get(field)
-				new_publications.append(cloned_pub)
+			# if (clone_and_insert_fields):
+			# 	cloned_pub = dict(pub)
+			# 	for field in new_fields:
+			# 		cloned_pub[field] = new_fields.get(field)
+			# 	new_publications.append(cloned_pub)
 
-		self.publications = new_publications
+			if len(clone_and_insert_fields) < 1:
+				continue
+
+			new_object: dict[str,str] = {}
+			for addfield in clone_and_insert_fields:
+				new_object[addfield] = pub[addfield]
+			for newfield in new_fields:
+				new_object[newfield] = pub[newfield]
+			new_publications.append(new_object)
+			
+		self.publications.append(new_publications)
