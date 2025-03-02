@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 
 class Bibtex:
 
@@ -43,3 +44,17 @@ class Bibtex:
 				return False
 		return True
 	
+	def write_bibtex_to_file(self, directory: str):
+		if (os.path.isdir(directory) is False):
+			os.makedirs(directory)
+
+		entrytype = "article"
+		citekey = "CiteKey"
+		content = "author = AUTHOR,\ntitle=TITLE"
+		with open(f"{directory}/__PLACEHOLDER__.bibtex", mode="w") as f:
+			f.write(
+f"""@{entrytype}{{ {citekey},
+{content}
+}}
+"""
+			)

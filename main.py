@@ -35,10 +35,14 @@ print(bla0)
 print(bla1)
 print(bla2)
 
-# --- test publication binder#
+# --- test publication binder
 opts = BinderOptions("binding_prototype.txt")
 j2 = Publication(f"{journals_output_dir}/4.conv.html")
 jb = PublicationBinder(j, opts)
 btx = jb.get_bibtex()
+
+# --- test bibtex writing
+btx[0].write_bibtex_to_file("out")
+
 
 print("done")

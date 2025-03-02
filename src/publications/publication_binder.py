@@ -4,23 +4,29 @@ from ..binding.regex_variable_binder import RegexVariableBinder
 from .publication import Publication
 import os.path as path
 
+non_bibtex_field_options = [
+	"replace",
+	"entrytype",
+	"citekey",
+]
+
 class PublicationBinder:
 
 	publication: Publication
 	binder: RegexVariableBinder
-	options: BinderOptions
+	binder_opts: BinderOptions
 	bibtex_list: list[Bibtex] = []
 
 	def __init__(self, publication: Publication, options: BinderOptions):
 		self.publication = publication
-		self.options = options
+		self.binder_opts = options
 		self.binder = RegexVariableBinder(binderoptions=options)
 	
 	def __get_options_for_file(self) -> dict[str,str] | None:
 		filename = path.basename(self.publication.file)
 		last_dot_idx = filename.rfind(".")
 		filename = filename[0:last_dot_idx]
-		opts_for_file = self.options.get_individual_options(filename)
+		opts_for_file = self.binder_opts.get_individual_options(filename)
 		return opts_for_file
 
 	def get_bibtex(self) -> list[Bibtex]:
@@ -30,7 +36,7 @@ class PublicationBinder:
 			raise Exception("No selectors defined for " + self.publication.file)
 
 		for selector in selector_pattern_map:
-			if selector == "replace":
+			if selector.lower() in non_bibtex_field_options:
 				continue
 
 			pattern = selector_pattern_map.get(selector)
@@ -65,12 +71,14 @@ class PublicationBinder:
 				
 	
 	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> dict[str, str]:
-		# do common replace (whitespace and options)
+		# do common replace (whitespace characters)
 		bind_text = bind_text.replace("\n", " ")
 		bind_text = bind_text.replace("\t", " ")
 		bind_text = bind_text.replace("\r", " ")
 		bind_text = bind_text.strip()
-		global_replaces = self.options.options.get("replace")
+		
+		# do global replace (options.replace)
+		global_replaces = self.binder_opts.options.get("replace")
 		bind_text = self.__do_replaces(global_replaces, bind_text)
 
 		# do publication specific replace (replace)
@@ -87,12 +95,15 @@ class PublicationBinder:
 
 	def __do_replaces(self, options_string: str, text_to_replace_in: str) -> str:
 		if options_string is not None:
+
 			for replace_entry in options_string.split(",", 2):
+				
 				if replace_entry == "":
 					continue
+
 				replace_from_to = replace_entry.split("=", 2)
 				text_to_replace_in = text_to_replace_in.replace(replace_from_to[0], replace_from_to[1])
-				pass
+
 		return text_to_replace_in
 	
 	def __remove_duplicates_and_incompletes(self):
@@ -112,4 +123,3 @@ class PublicationBinder:
 				if (b.equals(b2)):
 					self.bibtex_list.remove(b)
 					break
-			pass

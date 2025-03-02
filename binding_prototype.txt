@@ -1,14 +1,17 @@
 options:
-	dotall:FALSE
 	replace:–=-,�=-,�=ß
 	flags:gm
 defaults:
+	entrytype:article
+	citekey:TITLE
 	JAHR:\d{4}
 	ORT:.*
 	PUBLICATION:.*
 	TITLE:.*
 4.conv:
 	replace:–=-
+	entrytype:article
+	citekey:TITLE
 	h1.a.span:{{PUBLICATION}}
 	p.span:\d. {{TITLE}} ([–-]) ?{{.*? as ORT}}, {{\d{4} as JAHR}}
 5:
