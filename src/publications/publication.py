@@ -1,21 +1,32 @@
+from os import path
 import bs4
 
 class Publication:
 
-    file: str
-    raw_publication: bs4.BeautifulSoup = None
+    __file: str
+    __encoding: str
+    __raw_publication: bs4.BeautifulSoup = None
 
-    def __init__(self, publication_file: str):
-        self.file = publication_file
-        with open(publication_file, "r", encoding="cp1252") as file:
-            content = file.read()
-            self.raw_publication = bs4.BeautifulSoup(content, features="lxml")
+    def __init__(self, publication_file: str, encoding: str = None):
+        self.__file = publication_file
+        self.__encoding = encoding
+        with open(publication_file, "r", encoding=self.__encoding) as f:
+            content = f.read()
+            self.__raw_publication = bs4.BeautifulSoup(content, features="lxml")
+
+    def get_filename(self, with_extension: bool = True) -> str:
+        if (with_extension):
+            return path.basename(self.__file)
+        else:
+            name = path.basename(self.__file)
+            return name[0 : name.rfind(".")]
+
 
     def as_htmltext(self, pretty=True) -> str:
-        return self.raw_publication.decode(pretty, "cp1252")
+        return self.__raw_publication.decode(pretty, self.__encoding)
 
     def as_plaintext(self) -> str:
-        return self.raw_publication.get_text()
+        return self.__raw_publication.get_text()
     
     def write_to_file(self, filename, pretty=True) -> None:
         '''
@@ -29,7 +40,7 @@ class Publication:
 
         tags = html_selector.split(".")
         first_tag = tags.pop(0)
-        resultset = self.raw_publication.html.body.find_all(first_tag)
+        resultset = self.__raw_publication.html.body.find_all(first_tag)
         
         while len(tags) > 0:
             tag = tags.pop(0)

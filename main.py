@@ -1,3 +1,4 @@
+from src.publications.bibtex_writer import BibtexWriter
 from src.binding.binder_options import BinderOptions
 from src.publications.publication_binder import PublicationBinder
 from src.binding.regex_variable_binder import RegexVariableBinder
@@ -7,6 +8,8 @@ from src.publications.publication import Publication
 files = "./input/ucb_2024.htm"
 journals_output_dir = "journals"
 bibtex_output_dir = "bibtex"
+test_publication = f"{journals_output_dir}/4.conv.html"
+bibtex_output_dir = "out"
 # --- extract publications to own html
 # print("extracting")
 # files = ExtractPublications.extract_text(
@@ -21,7 +24,7 @@ bibtex_output_dir = "bibtex"
 # print(j.as_htmltext())
 
 # --- test publication get text
-j = Publication(f"{journals_output_dir}/4.conv.html")
+j = Publication(test_publication)
 jc = j.get_text_at("p.span")
 print(jc)
 
@@ -37,12 +40,12 @@ print(bla2)
 
 # --- test publication binder
 opts = BinderOptions("binding_prototype.txt")
-j2 = Publication(f"{journals_output_dir}/4.conv.html")
+j2 = Publication(test_publication, encoding="cp1252")
 jb = PublicationBinder(j, opts)
 btx = jb.get_bibtex()
 
 # --- test bibtex writing
-btx[0].write_bibtex_to_file("out")
-
+writer = BibtexWriter(bibtex_output_dir, opts)
+writer.write_bibtex_to_file(j2.get_filename(with_extension=False), btx)
 
 print("done")

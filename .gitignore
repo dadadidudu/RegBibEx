@@ -6,4 +6,5 @@ pyvenv.cfg
 *.pyc
 
 journals*
+out
 body.html

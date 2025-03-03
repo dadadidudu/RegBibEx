@@ -2,7 +2,6 @@ from .bibtex import Bibtex
 from ..binding.binder_options import BinderOptions
 from ..binding.regex_variable_binder import RegexVariableBinder
 from .publication import Publication
-import os.path as path
 
 non_bibtex_field_options = [
 	"replace",
@@ -23,9 +22,7 @@ class PublicationBinder:
 		self.binder = RegexVariableBinder(binderoptions=options)
 	
 	def __get_options_for_file(self) -> dict[str,str] | None:
-		filename = path.basename(self.publication.file)
-		last_dot_idx = filename.rfind(".")
-		filename = filename[0:last_dot_idx]
+		filename = self.publication.get_filename(with_extension=False)
 		opts_for_file = self.binder_opts.get_individual_options(filename)
 		return opts_for_file
 
@@ -33,7 +30,7 @@ class PublicationBinder:
 		selector_pattern_map = self.__get_options_for_file()
 
 		if selector_pattern_map is None:
-			raise Exception("No selectors defined for " + self.publication.file)
+			raise Exception("No selectors defined for " + self.publication.get_filename(with_extension=False))
 
 		for selector in selector_pattern_map:
 			if selector.lower() in non_bibtex_field_options:
