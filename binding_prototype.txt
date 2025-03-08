@@ -8,7 +8,11 @@ defaults:
 	ORT:.*
 	PUBLICATION:.*
 	TITLE:.*
-4.conv:
+3:
+	h1.a.span:{{PUBLICATION}}
+	h2:\d. {{.* as AUTHOR}} {{TITLE}}, {{ORT}} {{JAHR}}(\(Koostaja {{.* as Koostaja}}\))?
+	vielleicht array an patterns?
+4:
 	replace:–=-
 	entrytype:article
 	citekey:TITLE

@@ -56,7 +56,7 @@ class BibtexWriter:
 		entrytype = self.__get_entrytype(filename)
 		
 
-		with open(f"{self.__directory}/{filename}.bibtex", mode="w") as f:
+		with open(f"{self.__directory}/{filename}.bibtex", mode="w", encoding="utf-8") as f:
 			for btx in file_content:
 				citekey = self.__get_citekey(filename, btx)
 				f.write(f"""@{entrytype}{{{citekey},{self.__get_bibtex_content(btx)}}}\n""")
