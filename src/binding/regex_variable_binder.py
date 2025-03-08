@@ -42,12 +42,15 @@ class RegexVariableBinder:
 			
 			Parameters:
 				string: the string to apply the regex to
-				regex_with_bindings: the regex containing variable bindings
+				regex_with_bindings: the regex containing variable bindings, can also be in array notation [str1, str2]
 			
 			Returns:
 				A dictionary where the requested variables have been bound to their value in the given input string.
 		"""
 		variables_present: list[str] = []
+
+		if (regex_with_bindings.startswith("[") and regex_with_bindings.endswith("]")):
+			regex_with_2 = regex_with_bindings.removeprefix("[").removesuffix("]").split("\n")
 
 		orig_regex_input = regex_with_bindings
 

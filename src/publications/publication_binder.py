@@ -36,12 +36,12 @@ class PublicationBinder:
 			if selector.lower() in non_bibtex_field_options:
 				continue
 
-			pattern = selector_pattern_map.get(selector)
+			pattern_entry = selector_pattern_map.get(selector)
 
 			texts_at_selector = self.publication.get_text_at(selector)
 
 			for text in texts_at_selector:
-				new_fields = self.__do_replaces_and_bind(text, pattern)
+				new_fields = self.__do_replaces_and_bind(text, pattern_entry)
 				if (len(new_fields) < 1):
 					continue
 
