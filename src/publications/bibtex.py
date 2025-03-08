@@ -32,13 +32,16 @@ class Bibtex:
 				return False
 		return True
 	
+	def is_empty(self) -> bool:
+		return len(self.__fields_and_values) == 0
+	
 	def equals(self, other: Bibtex):
 		for f, v in self.get_fields_and_values().items():
 			v_other = other.get_field_value(f)
 			if (v_other == "" or v != v_other):
 				return False
 		for f2, v2 in other.get_fields_and_values().items():
-			v_this = self.get_field_value()
+			v_this = self.get_field_value(f2)
 			if (v_this == "" or v2 != v_this):
 				return False
 		return True

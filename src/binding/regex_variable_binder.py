@@ -33,7 +33,7 @@ class RegexVariableBinder:
 
 		self.variable_finder_pattern = re.compile(r"{{(.*?)}}") # finds {{VARIABLE}} and {{REGEX as VARIABLE}}
 	
-	def apply(self, string: str, regex_with_bindings: str) -> dict[str, str]:
+	def apply(self, string: str, regexes_with_bindings: list[str]) -> list[dict[str, str]]:
 		"""
 		Apply the given regex with bindings to the given string.
 		Bindings can either be {{VAR_NAME}} or {{REGEX as VAR_NAME}}.
@@ -42,20 +42,44 @@ class RegexVariableBinder:
 			
 			Parameters:
 				string: the string to apply the regex to
-				regex_with_bindings: the regex containing variable bindings, can also be in array notation [str1, str2]
+				regex_with_bindings: the regex containing variable bindings as list
 			
 			Returns:
-				A dictionary where the requested variables have been bound to their value in the given input string.
+				A list of dictionaries where the requested variables have been bound to their value in the given input string. Each entry in the list corresponds to a regex. Each dictionary to the regex->variable mappings for the regex.
 		"""
+
+		all_mappings: list[dict[str, str]] = []
+
+		for regex_with_bindings in regexes_with_bindings:
+			
+			# convert regex with bindings to a proper regex, saving occuring variables
+			variables_present, proper_regex = self.__convert_binding_regex_to_common_regex(regex_with_bindings)
+			
+			# apply the converted regex
+			r = self.__apply_regex(proper_regex, string)
+			if (r is None):
+				print(f"Regex {regex_with_bindings} yielded no results on string {string}")
+				continue
+			
+			# generate return mapping
+			mappings = self.__generate_mappings(r, variables_present)
+
+			# add to results
+			all_mappings.append(mappings)
+
+		return all_mappings
+
+	def __convert_binding_regex_to_common_regex(self, regex_to_convert: str) -> list[str]:
+		""""
+		Converts a regex string that includes bindings to a proper regex.
+		Returns a tuple of 1. the list of the variable names that were found as bind targets, and 2. the proper regex.
+		"""
+		
 		variables_present: list[str] = []
-
-		if (regex_with_bindings.startswith("[") and regex_with_bindings.endswith("]")):
-			regex_with_2 = regex_with_bindings.removeprefix("[").removesuffix("]").split("\n")
-
-		orig_regex_input = regex_with_bindings
+		common_regex = regex_to_convert
 
 		# convert regex with bindings to a proper regex
-		for varDef in re.findall(self.variable_finder_pattern, regex_with_bindings):
+		for varDef in re.findall(self.variable_finder_pattern, regex_to_convert):
 			regex = ""
 			variable = ""
 
@@ -79,19 +103,19 @@ class RegexVariableBinder:
 			
 			variables_present.append(variable)
 			new = r"(?P<" + variable + ">" + regex + ")"
-			regex_with_bindings = regex_with_bindings.replace(r"{{" + varDef + r"}}", new)
+			common_regex = common_regex.replace(r"{{" + varDef + r"}}", new)
 		
-		# apply the converted regex
-		compiled_regex = re.compile(regex_with_bindings, re.MULTILINE)
-		r = re.search(compiled_regex, string)
-		if (r is None):
-			print(f"Regex {orig_regex_input} yielded no results on string {string}")
-			return
-		
-		# generate return mapping
+		return (variables_present, common_regex)
+
+	def __apply_regex(self, regex: str, apply_to: str) -> re.Match[str] | None:
+		compiled_regex = re.compile(regex, re.MULTILINE)
+		r = re.search(compiled_regex, apply_to)
+		return r
+
+
+	def __generate_mappings(self, regex_result: re.Match, variables_present: list[str]) -> dict[str, str]:
 		mappings: dict[str, str] = {}
 		for varDef in variables_present:
-			var_value = r.group(varDef)
+			var_value = regex_result.group(varDef)
 			mappings[varDef] = var_value
-
 		return mappings

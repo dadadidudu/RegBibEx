@@ -41,24 +41,28 @@ class PublicationBinder:
 			texts_at_selector = self.publication.get_text_at(selector)
 
 			for text in texts_at_selector:
-				new_fields = self.__do_replaces_and_bind(text, pattern_entry)
-				if (len(new_fields) < 1):
-					continue
+				# each selector-text is a new bibtex or an addition to existing ones
+				list_of_new_fields = self.__do_replaces_and_bind(text, pattern_entry)
+				# every entry in this list is a bound object with data key/values
 
-				new_publication: Bibtex = None
-				
-				if (len(self.bibtex_list) > 0):
-					# update newly created publication with existing fields (assumes all fields are in all publications)
-					old_pub_to_update_new_from = self.bibtex_list[0]
-					new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
-					new_publication.set_all_fields(new_fields)
+				for new_fields in list_of_new_fields:
+					if (len(new_fields) < 1):
+						continue
 
-				else:
-					# create  a new publication
-					new_publication = Bibtex(new_fields)
-				
-				# add new publication to existing publications
-				self.bibtex_list.append(new_publication)
+					new_publication: Bibtex = None
+					
+					if (len(self.bibtex_list) > 0):
+						# update newly created publication with existing fields (assumes all fields are in all publications)
+						old_pub_to_update_new_from = self.bibtex_list[0]
+						new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
+						new_publication.set_all_fields(new_fields)
+
+					else:
+						# create  a new publication
+						new_publication = Bibtex(new_fields)
+					
+					# add new publication to existing publications
+					self.bibtex_list.append(new_publication)
 			
 			# now we should have every defined bibtex field
 			pass
@@ -67,7 +71,7 @@ class PublicationBinder:
 		return self.bibtex_list
 				
 	
-	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> dict[str, str]:
+	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> list[dict[str, str]]:
 		# do common replace (whitespace characters)
 		bind_text = bind_text.replace("\n", " ")
 		bind_text = bind_text.replace("\t", " ")
@@ -84,7 +88,7 @@ class PublicationBinder:
 
 		# bind
 		results = self.binder.apply(bind_text, pattern)
-		if (results is None):
+		if (len(results) == 0):
 			print(f"No results found for pattern {pattern} in text {bind_text}")
 			return {}
 		else:
