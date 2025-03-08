@@ -11,8 +11,8 @@ defaults:
 3:
 	h1.a.span:{{PUBLICATION}}
 	h2:[
-		\d. {{.* as AUTHOR}} {{TITLE}}, {{ORT}} {{JAHR}}(\(Koostaja {{.* as Koostaja}}\))?
-		\d. {{.* as AUTHOR}} {{TITLE}}, {{ORT}} {{JAHR}}
+		\d. {{.* as AUTHOR}} {{TITLE}}, ?{{ORT}} ?{{JAHR}}(\(Koostaja {{.* as Koostaja}}\))?
+		\d. {{.* as AUTHOR}} {{TITLE}}, ?{{ORT}} ?{{JAHR}}
 	]
 4:
 	replace:–=-

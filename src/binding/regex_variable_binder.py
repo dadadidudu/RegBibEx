@@ -45,7 +45,7 @@ class RegexVariableBinder:
 				regex_with_bindings: the regex containing variable bindings as list
 			
 			Returns:
-				A list of dictionaries where the requested variables have been bound to their value in the given input string. Each entry in the list corresponds to a regex. Each dictionary to the regex->variable mappings for the regex.
+				A list of dictionaries where the requested variables have been bound to their value in the given input string. Each entry in the list corresponds to the regex at the same index in the given list. Each dictionary to the regex->variable mappings for the regex.
 		"""
 
 		all_mappings: list[dict[str, str]] = []

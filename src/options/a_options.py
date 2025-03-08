@@ -91,7 +91,7 @@ class AOptions(ABC):
 			self.individual_opts[indiv_option_section][indiv_option_key].append(new_value)
 		
 
-	def get_individual_options(self, key: str) -> dict[str, str] | None:
+	def get_individual_options(self, key: str) -> dict[str, list[str]] | None:
 		"""
 		Returns an object that is defined at the root of the options file in the form of:
 		<KEY>:\\n\\t<INDIVIDUAL_KEY>:<VALUE>.

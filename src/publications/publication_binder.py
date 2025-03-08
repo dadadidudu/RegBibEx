@@ -3,10 +3,14 @@ from ..binding.binder_options import BinderOptions
 from ..binding.regex_variable_binder import RegexVariableBinder
 from .publication import Publication
 
+REPLACE_OPTION = "replace"
+ENTRYTYPE_OPTION = "entrytype"
+CITEKY_OPTION = "citekey"
+
 non_bibtex_field_options = [
-	"replace",
-	"entrytype",
-	"citekey",
+	REPLACE_OPTION,
+	ENTRYTYPE_OPTION,
+	CITEKY_OPTION
 ]
 
 class PublicationBinder:
@@ -21,28 +25,28 @@ class PublicationBinder:
 		self.binder_opts = options
 		self.binder = RegexVariableBinder(binderoptions=options)
 	
-	def __get_options_for_file(self) -> dict[str,str] | None:
+	def __get_options_for_file(self) -> dict[str, list[str]] | None:
 		filename = self.publication.get_filename(with_extension=False)
 		opts_for_file = self.binder_opts.get_individual_options(filename)
 		return opts_for_file
 
 	def get_bibtex(self) -> list[Bibtex]:
-		selector_pattern_map = self.__get_options_for_file()
+		selector_patterns_map = self.__get_options_for_file()
 
-		if selector_pattern_map is None:
+		if selector_patterns_map is None:
 			raise Exception("No selectors defined for " + self.publication.get_filename(with_extension=False))
 
-		for selector in selector_pattern_map:
+		for selector in selector_patterns_map:
 			if selector.lower() in non_bibtex_field_options:
 				continue
 
-			pattern_entry = selector_pattern_map.get(selector)
+			pattern_entries = selector_patterns_map.get(selector)
 
 			texts_at_selector = self.publication.get_text_at(selector)
 
 			for text in texts_at_selector:
 				# each selector-text is a new bibtex or an addition to existing ones
-				list_of_new_fields = self.__do_replaces_and_bind(text, pattern_entry)
+				list_of_new_fields = self.__do_replaces_and_bind(text, pattern_entries)
 				# every entry in this list is a bound object with data key/values
 
 				for new_fields in list_of_new_fields:
@@ -71,7 +75,7 @@ class PublicationBinder:
 		return self.bibtex_list
 				
 	
-	def __do_replaces_and_bind(self, bind_text: str, pattern: str) -> list[dict[str, str]]:
+	def __do_replaces_and_bind(self, bind_text: str, patterns: list[str]) -> list[dict[str, str]]:
 		# do common replace (whitespace characters)
 		bind_text = bind_text.replace("\n", " ")
 		bind_text = bind_text.replace("\t", " ")
@@ -79,17 +83,19 @@ class PublicationBinder:
 		bind_text = bind_text.strip()
 		
 		# do global replace (options.replace)
-		global_replaces = self.binder_opts.options.get("replace")
+		global_replaces = self.binder_opts.options.get(REPLACE_OPTION)
 		bind_text = self.__do_replaces(global_replaces, bind_text)
 
 		# do publication specific replace (replace)
-		specific_replaces = self.__get_options_for_file().get("replace")
-		bind_text = self.__do_replaces(specific_replaces, bind_text)
+		file_specific_options = self.__get_options_for_file()
+		if (REPLACE_OPTION in file_specific_options.keys()):
+			specific_replaces = file_specific_options.get(REPLACE_OPTION)[0]
+			bind_text = self.__do_replaces(specific_replaces, bind_text)
 
 		# bind
-		results = self.binder.apply(bind_text, pattern)
+		results = self.binder.apply(bind_text, patterns)
 		if (len(results) == 0):
-			print(f"No results found for pattern {pattern} in text {bind_text}")
+			print(f"No results found for patterns {patterns} in text {bind_text}")
 			return {}
 		else:
 			return results
