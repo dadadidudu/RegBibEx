@@ -8,7 +8,7 @@ from src.publications.publication import Publication
 files = "./input/ucb_2024.htm"
 journals_output_dir = "journals"
 bibtex_output_dir = "bibtex"
-test_publication = f"{journals_output_dir}/3.html"
+test_publication = f"{journals_output_dir}/4.html"
 bibtex_output_dir = "out"
 
 # --- extract publications to own html

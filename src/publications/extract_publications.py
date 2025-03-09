@@ -7,7 +7,7 @@ def as_html(title, body):
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv=Content-Type content="text/html>
+<meta http-equiv=Content-Type content="text/html">
 <title>{title}</title>
 </head>
 <body>
