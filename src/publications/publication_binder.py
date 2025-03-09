@@ -6,6 +6,7 @@ from .publication import Publication
 REPLACE_OPTION = "replace"
 ENTRYTYPE_OPTION = "entrytype"
 CITEKY_OPTION = "citekey"
+ADD_PREFIX = "+"
 
 non_bibtex_field_options = [
 	REPLACE_OPTION,
@@ -36,45 +37,61 @@ class PublicationBinder:
 		if selector_patterns_map is None:
 			raise Exception("No selectors defined for " + self.publication.get_filename(with_extension=False))
 
+		fields_to_add_everywhere: list[Bibtex] = []
+
 		for selector in selector_patterns_map:
 			if selector.lower() in non_bibtex_field_options:
-				continue
+				continue # not a seletor
 
 			pattern_entries = selector_patterns_map.get(selector)
 
+			is_add = False
+			if (selector.startswith(ADD_PREFIX)):
+				selector = selector[1:]
+				is_add = True
+			
 			texts_at_selector = self.publication.get_text_at(selector)
 
 			for text in texts_at_selector:
 				# each selector-text is a new bibtex or an addition to existing ones
 				list_of_new_fields = self.__do_replaces_and_bind(text, pattern_entries)
-				# every entry in this list is a bound object with data key/values
 
-				for new_fields in list_of_new_fields:
-					if (len(new_fields) < 1):
-						continue
+				most_significat_fields = self.__get_most_significant_fields(list_of_new_fields)
+				if (len(most_significat_fields) == 0):
+					continue
 
-					new_publication: Bibtex = None
-					
-					if (len(self.bibtex_list) > 0):
-						# update newly created publication with existing fields (assumes all fields are in all publications)
-						old_pub_to_update_new_from = self.bibtex_list[0]
-						new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
-						new_publication.set_all_fields(new_fields)
-
-					else:
-						# create  a new publication
-						new_publication = Bibtex(new_fields)
-					
-					# add new publication to existing publications
-					self.bibtex_list.append(new_publication)
-			
+				data_to_add = Bibtex(most_significat_fields)
+				if (is_add):
+					# add these fields to available data later on
+					fields_to_add_everywhere.append(data_to_add)
+				else:
+					self.bibtex_list.append(data_to_add)
+				
 			# now we should have every defined bibtex field
 			pass
 
-		self.__remove_duplicates_and_incompletes()
+		# add the fields that are universal to each bibtex
+		for field_to_add_everywhere in fields_to_add_everywhere:
+			for btx in self.bibtex_list:
+				btx.set_all_fields(field_to_add_everywhere.get_fields_and_values())
+
+		# self.__remove_duplicates_and_incompletes()
 		return self.bibtex_list
 				
-	
+	def __get_most_significant_fields(self, all_fields: list[dict[str, str]]) -> dict[str, str]:
+		selected: dict[str, str] = {}
+		if (all_fields is not None):
+			for curr_fields in all_fields:
+				# clear "None" entries
+				only_defined_values: dict[str, str] = {}
+				for (f, v) in curr_fields.items():
+					if (v is not None and v != "None"):
+						only_defined_values[f] = v
+				# select "most significant", i.e. the one with the most bibtex entries
+				if (len(only_defined_values) > len(selected)):
+					selected = only_defined_values
+		return selected
+
 	def __do_replaces_and_bind(self, bind_text: str, patterns: list[str]) -> list[dict[str, str]]:
 		# do common replace (whitespace characters)
 		bind_text = bind_text.replace("\n", " ")

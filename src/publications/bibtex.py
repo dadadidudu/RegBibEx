@@ -4,7 +4,7 @@ class Bibtex:
 
 	__fields_and_values: dict[str, str] = {}
 
-	def __init__(self, clone_from: Bibtex = None):
+	def __init__(self, clone_from: Bibtex|dict[str, str] = None):
 		if (clone_from is not None):
 			self.__fields_and_values = dict(clone_from)
 	
@@ -15,9 +15,13 @@ class Bibtex:
 	def get_fields_and_values(self) -> dict[str, str]:
 		return self.__fields_and_values
 
-	def get_field_value(self, field_name: str) -> str:
+	def get_field_value(self, field_name: str|list[str]) -> str:
 		"Returns the string saved at the given field name, or empty string if nothing saved."
-		return self.__fields_and_values.get(field_name, "")
+		if (isinstance(field_name, str)):
+			return self.__fields_and_values.get(field_name, "")
+		else:
+			field_name = field_name[0]
+			return self.__fields_and_values.get(field_name, "")
 	
 	def set_field(self, field_name: str, field_entry: str) -> None:
 		self.__fields_and_values[field_name] = field_entry
