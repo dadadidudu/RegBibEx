@@ -24,7 +24,7 @@ class AOptions(ABC):
 		"""
 
 		option_lines: list[str]
-		with open(options_file) as f:
+		with open(options_file, encoding="utf-8") as f:
 			option_lines = f.readlines()
 		current_section: str
 		for oln in option_lines:

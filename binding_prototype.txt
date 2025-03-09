@@ -16,6 +16,6 @@ defaults:
 	entrytype:article
 	citekey:TITLE
 	h1.a.span:{{PUBLICATION}}
-	p.span:\d. {{TITLE}} ([–-]) ?{{.*? as ORT}}, {{\d{4} as JAHR}}
+	p.span:\d. {{TITLE}} - ?{{.*? as ORT}}, {{\d{4} as JAHR}}
 5:
 	h1.a.span:{{PUBLICATION}}
