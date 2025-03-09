@@ -28,14 +28,16 @@ class BibtexWriter:
 	
 	def __get_entrytype(self, filename: str) -> str:
 		default_entrytype = self.__options.defaults.get(ENTRYTYPE_OPTION_KEY, DEFAULT_ENTRYTYPE_OPTION)
-		entrytype_for_this_file = self.__options.get_individual_options(filename).get(ENTRYTYPE_OPTION_KEY, default_entrytype)
-		return entrytype_for_this_file
+		entrytype_for_this_file = self.__options.get_individual_options(filename).get_options(ENTRYTYPE_OPTION_KEY, default_entrytype)
+		entrytype_value = entrytype_for_this_file.get_option()
+		return entrytype_value
 
 	def __get_citekey(self, filename: str, bibtex: Bibtex) -> str:
 		default_citekey = self.__options.defaults.get(CITEKEY_OPTION_KEY, DEFAULT_CITEKEY_OPTION)
-		citekey_for_this_file = self.__options.get_individual_options(filename).get(CITEKEY_OPTION_KEY, default_citekey)
+		citekey_for_this_file = self.__options.get_individual_options(filename).get_options(CITEKEY_OPTION_KEY, default_citekey)
 		
-		citekey_mapping = bibtex.get_field_value(citekey_for_this_file)
+		citekey_value: str = citekey_for_this_file.get_option()
+		citekey_mapping = bibtex.get_field_value(citekey_value)
 		
 		if (citekey_mapping == ""):
 			self.__i += 1
