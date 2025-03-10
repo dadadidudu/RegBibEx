@@ -10,10 +10,10 @@ defaults:
 	TITLE:.*
 3:
 	+h1.a.span:{{JOURNAL}}
-	h2.span:(\d+\. )?{{[A-Z]\S* [A-Z]\S* as AUTHOR}} {{[A-Z ]* as TITLE}}, {{ADDRESS}} {{YEAR}}
-	h2.span:(\d+\. )?{{.*\. .*, .* as TITLE}}, {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
-	h2.span:(\d+\. )?{{.*\. .*, .*! / .*\. .*, .*! as TITLE}}, {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
-	h2.span:(\d+\. )?{{[A-Z].* [A-Z].* as AUTHOR}} {{.* / .* as TITLE}}, {{ADDRESS}} {{YEAR}}
+	h2.span:(\d+\. ){{[A-Z]\S* [A-Z]\S* as AUTHOR}} {{[A-Z ]* as TITLE}}, {{ADDRESS}} {{YEAR}}
+	h2.span:(\d+\. ){{[^/]*\. [^/]*, [^/]* as TITLE}}, {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. ){{.*/.*! as TITLE}} {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. ){{[A-Z][a-zä]+ [A-Z][a-zä]+ as AUTHOR}} {{.* / .* as TITLE}}, {{ADDRESS}} {{YEAR}}
 	h2.span:\d+\.{{.* as TITLE}}, {{ADDRESS}} ?\d+\.-\d+\.\d+\.{{YEAR}}\.
 4:
 	replace:–=-
