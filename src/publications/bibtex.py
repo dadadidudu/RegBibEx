@@ -2,11 +2,13 @@ from __future__ import annotations
 
 class Bibtex:
 
-	__fields_and_values: dict[str, str] = {}
+	__fields_and_values: dict[str, str]
 
 	def __init__(self, clone_from: Bibtex = None):
 		if (clone_from is not None):
 			self.__fields_and_values = dict(clone_from)
+		else:
+			self.__fields_and_values = {}
 	
 	def get_current_fields(self) -> set[str]:
 		"Returns the list of fields in the Bibtex."

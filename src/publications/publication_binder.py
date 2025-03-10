@@ -56,12 +56,6 @@ class PublicationBinder:
 					new_publication: Bibtex = self.__create_new_bibtex_for_fields(new_fields)
 					# add new publication to existing publications
 					self.bibtex_list.append(new_publication)
-				
-				if (len(self.bibtex_list) > 0):
-					# update newly created publication with existing fields (assumes all fields are in all publications)
-					old_pub_to_update_new_from = self.bibtex_list[0]
-					new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
-					new_publication.set_all_fields(new_fields)
 			
 			# now we should have every defined bibtex field
 			pass
