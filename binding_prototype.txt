@@ -9,7 +9,7 @@ defaults:
 	PUBLICATION:.*
 	TITLE:.*
 3:
-	h1.a.span:{{PUBLICATION}}
+	+h1.a.span:{{PUBLICATION}}
 	h2.span:(\d+\. )?{{[A-Z]\S* [A-Z]\S* as AUTHOR}} {{[A-Z ]* as TITLE}}, {{ORT}} {{JAHR}}
 	h2.span:(\d+\. )?{{.*\. .*, .* as TITLE}}, {{ORT}} {{JAHR}}( \(Koostaja {{.* as AUTHOR}}\))?
 	h2.span:(\d+\. )?{{.*\. .*, .*! / .*\. .*, .*! as TITLE}}, {{ORT}} {{JAHR}}( \(Koostaja {{.* as AUTHOR}}\))?
@@ -19,7 +19,7 @@ defaults:
 	replace:–=-
 	entrytype:article
 	citekey:TITLE
-	h1.a.span:{{PUBLICATION}}
+	+h1.a.span:{{PUBLICATION}}
 	p.span:\d. {{TITLE}} - ?{{.*? as ORT}}, {{\d{4} as JAHR}}
 5:
-	h1.a.span:{{PUBLICATION}}
+	+h1.a.span:{{PUBLICATION}}

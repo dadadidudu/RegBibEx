@@ -48,6 +48,9 @@ class RegexVariableBinder:
 			Returns:
 				A dictionary where the requested variables have been bound to their value in the given input string.
 		"""
+		if (string.strip() == ""):
+			return {}
+
 		variables_present: list[str] = []
 
 		orig_regex_input = regex_with_bindings

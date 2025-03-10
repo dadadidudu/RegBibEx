@@ -30,6 +30,7 @@ class PublicationBinder:
 
 	def get_bibtex(self) -> list[Bibtex]:
 		file_options = self.__get_options_for_file()
+		fields_to_add_to_all_later: list[dict[str, str]] = []
 
 		if file_options is None:
 			raise Exception("No selectors defined for " + self.publication.get_filename(with_extension=False))
@@ -39,33 +40,38 @@ class PublicationBinder:
 				continue
 
 			html_selector = option_entry
-			patterns_for_selector = file_options.get_options(html_selector)
+			selector_options = file_options.get_options(html_selector)
 			texts_at_selector = self.publication.get_text_at(html_selector)
 
 			for text in texts_at_selector:
-				new_fields = self.__do_replaces_and_bind(text, patterns_for_selector)
-				if (new_fields is None or len(new_fields) < 1):
-					continue
+				new_fields = self.__do_replaces_and_bind(text, selector_options)
 
-				new_publication: Bibtex = None
+				if (new_fields is None or len(new_fields) < 1):
+					continue # no bound fields for this selector-regex entry
+
+				if (selector_options.is_add_key):
+					fields_to_add_to_all_later.append(new_fields)
+				else:
+					# create  a new publication
+					new_publication: Bibtex = self.__create_new_bibtex_for_fields(new_fields)
+					# add new publication to existing publications
+					self.bibtex_list.append(new_publication)
 				
 				if (len(self.bibtex_list) > 0):
 					# update newly created publication with existing fields (assumes all fields are in all publications)
 					old_pub_to_update_new_from = self.bibtex_list[0]
 					new_publication = Bibtex(old_pub_to_update_new_from.get_fields_and_values())
 					new_publication.set_all_fields(new_fields)
-
-				else:
-					# create  a new publication
-					new_publication = Bibtex(new_fields)
-				
-				# add new publication to existing publications
-				self.bibtex_list.append(new_publication)
 			
 			# now we should have every defined bibtex field
 			pass
 
-		self.__remove_duplicates_and_incompletes()
+		# add collected fields to add all
+		for f in fields_to_add_to_all_later:
+			self.__add_binding_to_all_existing_bibtex(f)
+		
+		# TODO might not be needed?
+		#self.__remove_duplicates_and_incompletes()
 		return self.bibtex_list
 				
 	
@@ -155,3 +161,12 @@ class PublicationBinder:
 				if (b.equals(b2)):
 					self.bibtex_list.remove(b)
 					break
+
+	def __add_binding_to_all_existing_bibtex(self, fields_to_add: dict[str, str]):
+		for b in self.bibtex_list:
+			b.set_all_fields(fields_to_add)
+	
+	def __create_new_bibtex_for_fields(self, fields_for_new_bibtex: dict[str, str]) -> Bibtex:
+		new_bibtex = Bibtex()
+		new_bibtex.set_all_fields(fields_for_new_bibtex)
+		return new_bibtex
