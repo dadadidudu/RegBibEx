@@ -84,8 +84,7 @@ class PublicationBinder:
 		file_options = self.__get_options_for_file()
 		specific_replace_options = file_options.get_options("replace")
 		if (specific_replace_options is not None):
-			specific_replaces = specific_replace_options.get_option()
-			bind_text = self.__do_replaces(specific_replaces, bind_text)
+			bind_text = self.__do_replaces(specific_replace_options, bind_text)
 
 		bind_result = self.__do_bind(bind_text, patterns_option)
 		return bind_result
