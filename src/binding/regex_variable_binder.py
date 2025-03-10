@@ -1,5 +1,6 @@
 import re
 from .binder_options import BinderOptions
+from ..options.option import Option
 
 KEYWORD_VARIABLE_DEFINITION = " as " # {{REGEX as VARIABLE}}
 valid_var_name = re.compile(r"([A-Za-z0-9_])+", re.S)
@@ -10,10 +11,10 @@ class RegexVariableBinder:
 	E.g.: \\d.: {{TITLE}}, {{\\d{4} as YEAR}} will bind the contents of the string "1.: My Film Title, 1999" to the specified variables: TITLE: "My Film Title", YEAR: "1999".
 	"""
 
-	defaults: dict[str,str] = None
+	defaults: dict[str, Option] = None
 	variable_finder_pattern: re.Pattern
 
-	def __init__(self, defaults: dict[str,str] = None, optionsfile: str = "", binderoptions: BinderOptions = None):
+	def __init__(self, defaults: dict[str, Option] = None, optionsfile: str = "", binderoptions: BinderOptions = None):
 		"""
 		Suppy either hardcoded defaults, a path to an options file for the binder, or already existing BinderOptions to be used for this Binder (in this priority).
 		If none are supplied, only {{REGEX as VARIABLE}} definitions will work.
@@ -65,7 +66,7 @@ class RegexVariableBinder:
 				# only {{VARIABLE}}
 				if (self.defaults is not None):
 					variable = varDef
-					regex = self.defaults[varDef]
+					regex: str = self.defaults[varDef].get_option()
 				else:
 					raise Exception(r"Cannot use RegexVariableBinder with {{VARIABLE}} syntax: Defaults are missing.")
 
@@ -83,7 +84,7 @@ class RegexVariableBinder:
 		r = re.search(compiled_regex, string)
 		if (r is None):
 			print(f"Regex {orig_regex_input} yielded no results on string {string}")
-			return
+			return {}
 		
 		# generate return mapping
 		mappings: dict[str, str] = {}

@@ -10,7 +10,11 @@ defaults:
 	TITLE:.*
 3:
 	h1.a.span:{{PUBLICATION}}
-	h2.span:\d. {{.* as AUTHOR}} {{TITLE}}, {{ORT}} {{JAHR}}( \(Koostaja {{.* as Koostaja}}\))?
+	h2.span:(\d+\. )?{{[A-Z]\S* [A-Z]\S* as AUTHOR}} {{[A-Z ]* as TITLE}}, {{ORT}} {{JAHR}}
+	h2.span:(\d+\. )?{{.*\. .*, .* as TITLE}}, {{ORT}} {{JAHR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. )?{{.*\. .*, .*! / .*\. .*, .*! as TITLE}}, {{ORT}} {{JAHR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. )?{{[A-Z].* [A-Z].* as AUTHOR}} {{.* / .* as TITLE}}, {{ORT}} {{JAHR}}
+	h2.span:\d+\.{{.* as TITLE}}, {{ORT}} ?\d+\.-\d+\.\d+\.{{JAHR}}\.
 4:
 	replace:–=-
 	entrytype:article
