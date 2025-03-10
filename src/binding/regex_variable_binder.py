@@ -86,7 +86,7 @@ class RegexVariableBinder:
 		compiled_regex = re.compile(regex_with_bindings, re.MULTILINE)
 		r = re.search(compiled_regex, string)
 		if (r is None):
-			print(f"Regex {orig_regex_input} yielded no results on string {string}")
+			# print(f"Regex {orig_regex_input} yielded no results on string {string}")
 			return {}
 		
 		# generate return mapping

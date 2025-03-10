@@ -129,6 +129,8 @@ class PublicationBinder:
 		for result in all_results:
 			if (len(result) > len(most_plausible_result)):
 				most_plausible_result = result
+		if (len(most_plausible_result) > 0):
+			print(f"selected {most_plausible_result} from {all_results}")
 		return most_plausible_result
 	
 	def __remove_invalid_entries(self, entries: dict[str, str]) -> dict[str, str]:
