@@ -14,14 +14,15 @@ non_bibtex_field_options = [
 class PublicationBinder:
 
 	publication: Publication
-	binder: RegexVariableBinder
 	binder_opts: BinderOptions
-	bibtex_list: list[Bibtex] = []
+	binder: RegexVariableBinder
+	bibtex_list: list[Bibtex]
 
 	def __init__(self, publication: Publication, options: BinderOptions):
 		self.publication = publication
 		self.binder_opts = options
 		self.binder = RegexVariableBinder(binderoptions=options)
+		self.bibtex_list = []
 	
 	def __get_options_for_file(self) -> IndividualOptions | None:
 		filename = self.publication.get_filename(with_extension=False)

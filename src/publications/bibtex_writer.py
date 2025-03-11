@@ -62,3 +62,5 @@ class BibtexWriter:
 			for btx in file_content:
 				citekey = self.__get_citekey(filename, btx)
 				f.write(f"""@{entrytype}{{{citekey},{self.__get_bibtex_content(btx)}}}\n""")
+		
+		print("wrote bibtex for " + filename)

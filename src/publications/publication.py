@@ -5,7 +5,7 @@ class Publication:
 
     __file: str
     __input_encoding: str
-    __raw_publication: bs4.BeautifulSoup = None
+    __raw_publication: bs4.BeautifulSoup
 
     def __init__(self, publication_file: str, input_encoding: str = None):
         self.__file = publication_file
