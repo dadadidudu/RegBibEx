@@ -1,34 +1,52 @@
 from src.publications.bibtex_writer import BibtexWriter
 from src.binding.binder_options import BinderOptions
 from src.publications.publication_binder import PublicationBinder
-from src.binding.regex_variable_binder import RegexVariableBinder
 from src.publications.extract_publications import ExtractPublications
 from src.publications.publication import Publication
 
 files = "./input/ucb_2024.htm"
 journals_output_dir = "journals"
 bibtex_output_dir = "bibtex"
-test_publication = f"{journals_output_dir}/4.html"
 bibtex_output_dir = "out"
+
 
 # --- extract publications to own html
 print("extracting")
 files = ExtractPublications.extract_text(
     files, journals_output_dir, [1, 2], delete_existing=True)
 
+print("converting")
 # --- convert to utf-8
 for f in files:
 	j = Publication(f)
 	j.write_to_file(f, pretty=True, out_encoding="utf-8")
 
-# --- test publication binder
-options = BinderOptions("binding_prototype.txt")
-testpub = Publication(test_publication, "utf-8")
-testpub_binder = PublicationBinder(testpub, options)
-btx = testpub_binder.get_bibtex()
+print("finished extracting and converting")
 
-# --- test bibtex writing
-writer = BibtexWriter(bibtex_output_dir, options)
-writer.write_bibtex_to_file(testpub.get_filename(with_extension=False), btx)
+# init options
+options = BinderOptions("binding_prototype.txt")
+
+# init filename to file map
+filename_to_file = {
+	path_and_name[:path_and_name.rfind(".")].removeprefix(journals_output_dir + "\\"): path_and_name
+	for path_and_name in files
+}
+
+# do binding and write bibtex for each file defined in options
+for name in options.individual_opts.keys():
+	if (name not in filename_to_file.keys()):
+		continue
+	
+	file_path = filename_to_file[name]
+
+	testpub = Publication(file_path, "utf-8")
+	testpub_binder = PublicationBinder(testpub, options)
+	btx = testpub_binder.get_bibtex()
+
+	# --- write bibtex
+	writer = BibtexWriter(bibtex_output_dir, options)
+	writer.write_bibtex_to_file(testpub.get_filename(with_extension=False), btx)
 
 print("done")
+
+# TODO: add file output (instead of console) unmapped and selection 
