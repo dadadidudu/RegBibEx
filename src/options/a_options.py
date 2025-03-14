@@ -45,7 +45,7 @@ class AOptions(ABC):
 
 	def __setoption__(self, current_section: str, line: str) -> None:
 		"Sets the option in the currently selected option section. Raises error if no section was found."
-		key, val = line.strip().split(KEY_VALUE_SPLITTER)
+		key, val = line.strip().split(KEY_VALUE_SPLITTER, 1)
 		if (current_section == OPTIONS_SECTION):
 			self.options[key] = Option(val)
 		elif (current_section == DEFAULTS_SECTION):

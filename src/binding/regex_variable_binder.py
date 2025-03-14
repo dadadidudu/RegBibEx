@@ -62,7 +62,7 @@ class RegexVariableBinder:
 
 			if (KEYWORD_VARIABLE_DEFINITION in varDef):
 				# {{REGEX as VARIABLE}}
-				split = varDef.split(KEYWORD_VARIABLE_DEFINITION, 2)
+				split = varDef.split(KEYWORD_VARIABLE_DEFINITION, 1)
 				regex = split[0]
 				variable = split[1]
 			else:

@@ -95,14 +95,14 @@ class PublicationBinder:
 		if (replace_option.is_multiple):
 			replaces = replace_option.get_option()
 		else:
-			replaces = replace_option.get_option().split(",", 2)
+			replaces = replace_option.get_option().split(",", 1)
 
 		for replace_entry in replaces:
 			
 			if replace_entry is None or replace_entry == "":
 				continue
 
-			replace_from_to = replace_entry.split("=", 2)
+			replace_from_to = replace_entry.split("=", 1)
 			text_to_replace_in = text_to_replace_in.replace(replace_from_to[0], replace_from_to[1])
 
 		return text_to_replace_in
