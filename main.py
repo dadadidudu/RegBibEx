@@ -3,15 +3,16 @@ from src.binding.binder_options import BinderOptions
 from src.publications.publication_binder import PublicationBinder
 from src.publications.extract_publications import ExtractPublications
 from src.publications.publication import Publication
+from src.files import Files
 
 files = "./input/ucb_2024.htm"
-journals_output_dir = "journals"
+extract_output_dir = "journals"
 bibtex_output_dir = "out"
 
 # --- extract publications to own html
 print("extracting")
 files = ExtractPublications.extract_text(
-    files, journals_output_dir, [1, 2], delete_existing=True)
+    files, extract_output_dir, [1, 2], delete_existing=True)
 
 print("converting")
 # --- convert to utf-8
@@ -26,9 +27,12 @@ options = BinderOptions("binding_prototype.txt")
 
 # init filename to file map
 filename_to_file = {
-	path_and_name[:path_and_name.rfind(".")].removeprefix(journals_output_dir + "\\"): path_and_name
+	path_and_name[:path_and_name.rfind(".")].removeprefix(extract_output_dir + "\\"): path_and_name
 	for path_and_name in files
 }
+
+# remove output directory
+Files.delete_folder(bibtex_output_dir)
 
 # do binding and write bibtex for each file defined in options
 for name in options.individual_opts.keys():
@@ -38,7 +42,8 @@ for name in options.individual_opts.keys():
 	file_path = filename_to_file[name]
 
 	testpub = Publication(file_path, "utf-8")
-	testpub_binder = PublicationBinder(testpub, options)
+	log_output = f"{bibtex_output_dir}/{name}"
+	testpub_binder = PublicationBinder(testpub, options, log_output)
 	btx = testpub_binder.get_bibtex()
 
 	# --- write bibtex

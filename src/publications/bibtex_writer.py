@@ -1,7 +1,7 @@
-import os
 import re
 from ..binding.binder_options import BinderOptions
 from .bibtex import Bibtex
+from ..files import Files
 
 ENTRYTYPE_OPTION_KEY = "entrytype"
 DEFAULT_ENTRYTYPE_OPTION = "article"
@@ -74,12 +74,10 @@ class BibtexWriter:
 
 		"""
 
-		if (os.path.isdir(self.__directory) is False):
-			os.makedirs(self.__directory)
+		Files.create_dir(self.__directory)
 
 		entrytype = self.__get_entrytype(filename)
 		
-
 		with open(f"{self.__directory}/{filename}.bibtex", mode="w", encoding="utf-8") as f:
 			for btx in file_content:
 				citekey = self.__get_citekey(filename, btx)

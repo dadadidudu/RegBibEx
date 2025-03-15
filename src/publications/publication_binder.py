@@ -4,12 +4,15 @@ from ..binding.regex_variable_binder import RegexVariableBinder
 from .publication import Publication
 from ..options.individual_options import IndividualOptions
 from ..options.option import Option
+from ..files import Files
 
 non_bibtex_field_options = [
 	"replace",
 	"entrytype",
 	"citekey",
 ]
+
+DEFAULT_LOGFILE_EXTENSION = ".log"
 
 class PublicationBinder:
 	"""
@@ -21,14 +24,24 @@ class PublicationBinder:
 	binder_opts: BinderOptions
 	binder: RegexVariableBinder
 	bibtex_list: list[Bibtex]
-	__logfile_path: str = None
+	__logfile_path_and_name: str = None
 
-	def __init__(self, publication: Publication, options: BinderOptions, logfile_path: str = None):
+	def __init__(self, publication: Publication, options: BinderOptions, logfile_path_and_name: str = None):
+		"""
+		
+		Parameters:
+			publication: the Publication object to extract data fields from
+			options: the BinderOptions for the binding operation
+			logfile_path_and_name: the path and name (without extension) of the logfile.
+				This file will always be opened in "append" mode.
+		"""
+
+
 		self.publication = publication
 		self.binder_opts = options
 		self.binder = RegexVariableBinder(binderoptions=options)
 		self.bibtex_list = []
-		self.__logfile_path = logfile_path
+		self.__logfile_path_and_name = logfile_path_and_name
 	
 	def __get_options_for_file(self) -> IndividualOptions | None:
 		filename = self.publication.get_filename(with_extension=False)
@@ -59,7 +72,10 @@ class PublicationBinder:
 				new_fields = self.__do_replaces_and_bind(text, selector_options)
 
 				if (new_fields is None or len(new_fields) < 1):
-					continue # no bound fields for this selector-regex entry
+					# no bound fields for this selector-regex entry
+					message = f"No results for any of regex {selector_options.get_option()} in input: {text}"
+					self.__write_to_log(message)
+					continue
 
 				if (selector_options.is_add_key):
 					fields_to_add_to_all_later.append(new_fields)
@@ -159,8 +175,9 @@ class PublicationBinder:
 			if (len(result) > len(most_plausible_result)):
 				most_plausible_result = result
 		if (len(most_plausible_result) > 0):
-			# TODO output
-			print(f"selected {most_plausible_result} from {all_results}")
+			output = f"selected {most_plausible_result} from {all_results}"
+			self.__write_to_log(output)
+			print(output)
 		return most_plausible_result
 	
 	def __remove_invalid_entries(self, entries: dict[str, str]) -> dict[str, str]:
@@ -183,3 +200,23 @@ class PublicationBinder:
 		new_bibtex = Bibtex()
 		new_bibtex.set_all_fields(fields_for_new_bibtex)
 		return new_bibtex
+	
+	def __write_to_log(self, message: str):
+		"Writes the given message to the logfile given in the constructor. Always uses \"append\" mode."
+
+		if (self.__logfile_path_and_name is None or self.__logfile_path_and_name == ""):
+			return
+		
+		if ("/" in self.__logfile_path_and_name):
+			idx = self.__logfile_path_and_name.rfind("/")
+			directory = self.__logfile_path_and_name[:idx]
+			Files.create_dir(directory)
+		elif ("\\" in self.__logfile_path_and_name):
+			idx = self.__logfile_path_and_name.rfind("\\")
+			directory = self.__logfile_path_and_name[:idx]
+			Files.create_dir(directory)
+
+		filename = self.__logfile_path_and_name + DEFAULT_LOGFILE_EXTENSION
+		with open(filename, mode="a", encoding="utf-8") as f:
+			f.write(message + "\n")
+			f.write("-----\n")

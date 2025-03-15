@@ -1,6 +1,6 @@
 import re
 import os
-
+from ..files import Files
 
 def as_html(title, body):
     return f"""
@@ -22,7 +22,6 @@ class ExtractPublications:
     This class extracts the text of a given HTML file ("publication") and writes it to its own file.
     """
 
-
     @staticmethod
     def extract_text(input_file: str, output_path: str,
                     ignore: list[int] = [], delete_existing=False, html_tag: str = "div"
@@ -37,7 +36,7 @@ class ExtractPublications:
         body: str = ""
 
         if delete_existing:
-            ExtractPublications.delete_output_folder(output_path)
+            Files.delete_folder(output_path)
 
         # read html file and extract body
         with open(input_file) as file:
@@ -58,13 +57,13 @@ class ExtractPublications:
             else:
                 content = body[startpos:endpos-1]
                 # surround with html tags
-                ExtractPublications.write_file(
+                Files.write_file(
                     output_path, f"{curr_match}.html", as_html(f"publication {curr_match}", content))
 
             if curr_match + 1 == num_h1:
                 # last:
                 content = body[endpos:]
-                ExtractPublications.write_file(
+                Files.write_file(
                     output_path, f"{curr_match + 1}.html", as_html(f"publication {curr_match}", content))
 
             curr_match += 1
@@ -78,30 +77,6 @@ class ExtractPublications:
                 extracted_files.append(os.path.join(output_path, f))
         return extracted_files
 
-    @staticmethod
-    def delete_output_folder(path: str) -> None:
-        "Deletes the given path and all its subfiles and subfolders."
-
-        if os.path.exists(path) == False:
-            return
-        for root, dirs, files, in os.walk(path):
-            for f in files:
-                filepath = os.path.join(root, f)
-                os.remove(filepath)
-        os.removedirs(path)
-        print(f"removed {path}")
-
-    @staticmethod
-    def write_file(path: str, name: str, content: str) -> None:
-        "Writes the given content to a new file with the given path and name. Path can be ommitted"
-
-        if (path != ""):
-            os.makedirs(path, exist_ok=True)
-            with open(f"{path}/{name}", "w") as f:
-                f.write(content)
-        else:
-            with open(f"{name}", "w", encoding="utf-8") as f:
-                f.write(content)
 
     @staticmethod
     def get_text_between_tags(tag: str, content: str) -> str:
