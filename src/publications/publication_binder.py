@@ -97,7 +97,7 @@ class PublicationBinder:
 		if (replace_option.is_multiple):
 			replaces = replace_option.get_option()
 		else:
-			replaces = replace_option.get_option().split(",", 1)
+			replaces = replace_option.get_option().split(",")
 
 		for replace_entry in replaces:
 			
