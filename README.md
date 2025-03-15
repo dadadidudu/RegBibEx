@@ -5,8 +5,10 @@ An HTML to BibTex extractor based on regular expressions
 
 ## Use-Case
 
-<APP_NAME_PLACEHOLDER> reads and extracts text from HTML files based on selectors, and then extracts information from this text to variables based on regular expressions.
+RBX reads and extracts text from HTML files based on selectors, and then extracts information from this text to variables based on regular expressions.
+For binding regular expressions to variables, this app uses the [RegexVariableBinder (RVB)](TODO Link).
 These variables can then be written to a file.
+In this project, the intended output is BibTex files.
 
 The current use-case is to extract BibTex information for as many publications as possible from the (very large) set of publications in the document found on the
 [website of the COPIUS project](https://copius.univie.ac.at/tools.php).
