@@ -10,6 +10,9 @@ DEFAULT_CITEKEY_OPTION = "title"
 MAX_CITEKEY_LENGTH = 25
 
 class BibtexWriter:
+	"""
+	A class to write the data of multiple Bibtex to a single .bibtex file.
+	"""
 	
 	__i = 0
 	__directory: str
@@ -20,6 +23,8 @@ class BibtexWriter:
 		self.__options = options
 
 	def __get_bibtex_content(self, bibtex: Bibtex) -> str:
+		"Returns a single string with the fields and their values in BibTex syntax, concatenated with \\n."
+
 		content = "\n"
 		for fld, val in bibtex.get_fields_and_values().items():
 			content += f"\t{fld}\t=\t\"{val}\","
@@ -27,12 +32,20 @@ class BibtexWriter:
 		return content
 	
 	def __get_entrytype(self, filename: str) -> str:
+		"""
+		Returns the type of entry selected in the options for the file with the given name.
+		This is either the value defined under "citekey" in filename,
+		or (as fallback) the value defined under "citekey" in "defaults".
+		"""
+
 		default_entrytype = self.__options.defaults.get(ENTRYTYPE_OPTION_KEY, DEFAULT_ENTRYTYPE_OPTION)
 		entrytype_for_this_file = self.__options.get_individual_options(filename).get_options(ENTRYTYPE_OPTION_KEY, default_entrytype)
 		entrytype_value = entrytype_for_this_file.get_option()
 		return entrytype_value
 
 	def __get_citekey(self, filename: str, bibtex: Bibtex) -> str:
+		"Returns the value of the field selected as citekey for the given Bibtex file, as defined in the options."
+
 		default_citekey = self.__options.defaults.get(CITEKEY_OPTION_KEY, DEFAULT_CITEKEY_OPTION)
 		citekey_for_this_file = self.__options.get_individual_options(filename).get_options(CITEKEY_OPTION_KEY, default_citekey)
 		
@@ -52,6 +65,15 @@ class BibtexWriter:
 				return citekey_mapping
 
 	def write_bibtex_to_file(self, filename: str, file_content: list[Bibtex]):
+		"""
+		Writes the given list of Bibtex to a file with the given directory and name.
+
+		Parameters:
+			filename: the directory and name of the file. The file extension will be appended.
+			file_content: All the entries that should be written to the BibTex file of the provided name.
+
+		"""
+
 		if (os.path.isdir(self.__directory) is False):
 			os.makedirs(self.__directory)
 

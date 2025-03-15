@@ -2,6 +2,10 @@ from os import path
 import bs4
 
 class Publication:
+    """
+    A container for one HTML file (publication).
+    Uses BeautifulSoup4 to parse the given HTML file and provide easy access to the text inside.
+    """
 
     __file: str
     __input_encoding: str

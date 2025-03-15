@@ -1,6 +1,13 @@
 from __future__ import annotations
 
 class Bibtex:
+	"""
+	This class is a wrapper for a dictionary
+	that contains fields (keys) with custom names
+	and their assigned value.
+	It provides getter and setter as well as a
+	copy constructor and an equality check.
+	"""
 
 	__fields_and_values: dict[str, str]
 

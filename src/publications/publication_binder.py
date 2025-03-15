@@ -12,6 +12,10 @@ non_bibtex_field_options = [
 ]
 
 class PublicationBinder:
+	"""
+	Applies a RegexVariableBinder that uses the given options to the given Publication.
+	This results in a Bibtex object in which key-value pairs are bound according to their regex defined in the options.
+	"""
 
 	publication: Publication
 	binder_opts: BinderOptions
@@ -64,9 +68,7 @@ class PublicationBinder:
 		# add collected fields to add all
 		for f in fields_to_add_to_all_later:
 			self.__add_binding_to_all_existing_bibtex(f)
-		
-		# TODO might not be needed?
-		#self.__remove_duplicates_and_incompletes()
+
 		return self.bibtex_list
 				
 	
