@@ -1,6 +1,11 @@
 
 class Option:
-	# can be: array, string. always saved as array
+	"""
+	The value(s) set for one option. Always supplied as a string.
+	Setting an option value that doesn't already exist
+	will add it to the list of options and mark this option as "is_multiple".
+	Also supports a custom flag for whether this option set is a "is_add_key" option.
+	"""
 
 	is_multiple: bool
 	is_add_key: bool

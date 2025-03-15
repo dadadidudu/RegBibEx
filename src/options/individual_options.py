@@ -3,6 +3,11 @@ from .option import Option
 ADD_PREFIX = "+"
 
 class IndividualOptions:
+	"""
+	One section of individual options.
+	A key (optionally starting with an \"add prefix\")
+	and its assigned value(s) (one or multiple, if the key is defined multiole times).
+	"""
 
 	__options: dict[str, Option]
 
