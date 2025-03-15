@@ -51,5 +51,3 @@ for name in options.individual_opts.keys():
 	writer.write_bibtex_to_file(testpub.get_filename(with_extension=False), btx)
 
 print("done")
-
-# TODO: add file output (instead of console) unmapped and selection 
