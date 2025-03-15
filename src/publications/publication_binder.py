@@ -21,12 +21,14 @@ class PublicationBinder:
 	binder_opts: BinderOptions
 	binder: RegexVariableBinder
 	bibtex_list: list[Bibtex]
+	__logfile_path: str = None
 
-	def __init__(self, publication: Publication, options: BinderOptions):
+	def __init__(self, publication: Publication, options: BinderOptions, logfile_path: str = None):
 		self.publication = publication
 		self.binder_opts = options
 		self.binder = RegexVariableBinder(binderoptions=options)
 		self.bibtex_list = []
+		self.__logfile_path = logfile_path
 	
 	def __get_options_for_file(self) -> IndividualOptions | None:
 		filename = self.publication.get_filename(with_extension=False)
@@ -34,6 +36,11 @@ class PublicationBinder:
 		return opts_for_file
 
 	def get_bibtex(self) -> list[Bibtex]:
+		"""
+		Generates a list of Bibtex objects that use the constructor-given binding options
+		from the constructor-given publication.
+		"""
+
 		file_options = self.__get_options_for_file()
 		fields_to_add_to_all_later: list[dict[str, str]] = []
 
@@ -73,6 +80,11 @@ class PublicationBinder:
 				
 	
 	def __do_replaces_and_bind(self, bind_text: str, patterns_option: Option) -> dict[str, str]:
+		""""
+		Applies common replaces (whitespace), options-defined global replaces, and file-specific replaces on the given text.
+		Then applies regex-to-variable binding to the given list and returns the result of this operation.
+		"""
+
 		# do common replace (whitespace characters)
 		bind_text = bind_text.replace("\n", " ")
 		bind_text = bind_text.replace("\t", " ")
@@ -93,6 +105,11 @@ class PublicationBinder:
 		return bind_result
 
 	def __do_replaces(self, replace_option: Option, text_to_replace_in: str) -> str:
+		"""
+		Applies text replace on the given string according to the given option.
+		This has the format of TEXT_TO_BE_REPLACED=TEXT_TO_REPLACE_WITH
+		"""
+
 		replaces: list[str]
 		if (replace_option.is_multiple):
 			replaces = replace_option.get_option()
@@ -110,6 +127,10 @@ class PublicationBinder:
 		return text_to_replace_in
 	
 	def __do_bind(self, bind_text: str, patterns_option: Option) -> dict[str, str]:
+		"""
+		Binds variables from the given text according to the given regex patterns Option object.
+		"""
+
 		bind_result: dict[str, str]
 		
 		if (patterns_option.is_multiple):
@@ -128,44 +149,37 @@ class PublicationBinder:
 		return bind_result
 	
 	def __find_most_plausible_result(self, all_results: list[dict[str, str]]) -> dict[str, str]:
+		"""
+		Returns the result with the most key entries in the given list.
+		If supplied in the constructor, it will output the selection process in a seperate file.
+		"""
+		
 		most_plausible_result: dict[str, str] = {}
 		for result in all_results:
 			if (len(result) > len(most_plausible_result)):
 				most_plausible_result = result
 		if (len(most_plausible_result) > 0):
+			# TODO output
 			print(f"selected {most_plausible_result} from {all_results}")
 		return most_plausible_result
 	
 	def __remove_invalid_entries(self, entries: dict[str, str]) -> dict[str, str]:
+		"Removes keys that don't have any value assigned from the dictionary."
+
 		for k in list(entries.keys()):
 			if (entries[k] is None or entries[k] == str(None)):
 				del entries[k]
 		return entries
 
-	
-	def __remove_duplicates_and_incompletes(self):
-		# incompletes
-		all_current_fields = set()
-		for b in self.bibtex_list:
-			all_current_fields.update(b.get_current_fields())
-		
-		for b in self.bibtex_list:
-			curr_fields = b.get_current_fields()
-			if (all_current_fields != curr_fields):
-				self.bibtex_list.remove(b)
-		
-		# duplicates
-		for b in self.bibtex_list:
-			for b2 in [entry for entry in self.bibtex_list if entry != b]:
-				if (b.equals(b2)):
-					self.bibtex_list.remove(b)
-					break
-
 	def __add_binding_to_all_existing_bibtex(self, fields_to_add: dict[str, str]):
+		"Adds the given key-value pairs to all the currently existing Bibtex objects."
+
 		for b in self.bibtex_list:
 			b.set_all_fields(fields_to_add)
 	
 	def __create_new_bibtex_for_fields(self, fields_for_new_bibtex: dict[str, str]) -> Bibtex:
+		"Creates a new Bibtex object and fills it with the given key-value pairs."
+
 		new_bibtex = Bibtex()
 		new_bibtex.set_all_fields(fields_for_new_bibtex)
 		return new_bibtex
