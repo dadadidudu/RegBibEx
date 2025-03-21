@@ -4,50 +4,75 @@ from src.publications.publication_binder import PublicationBinder
 from src.publications.extract_publications import ExtractPublications
 from src.publications.publication import Publication
 from src.files import Files
+import argparse
 
-files = "./input/ucb_2024.htm"
-extract_output_dir = "journals"
-bibtex_output_dir = "out"
+OPTIONS_ARG_NAME = "options"
+OUT_ARG_NAME = "out"
+IN_ARG_NAME = "in"
+EXTRACT_ARG_NAME = "extract-dir"
 
-# --- extract publications to own html
-print("extracting")
-files = ExtractPublications.extract_text(
-    files, extract_output_dir, [1, 2], delete_existing=True)
+def parse_args() -> argparse.Namespace:
+	parser = argparse.ArgumentParser(prog="RegBibEx (RBX)",
+		description="An HTML to BibTex extractor based on regular expressions")
+	parser.add_argument("options", help="The options file to use. See README.md for structure.")
+	parser.add_argument("-i", f"--{IN_ARG_NAME}", "--input", default="input/ucb_2024.htm", help="Input (HTML) file to extract.")
+	parser.add_argument("-o", f"--{OUT_ARG_NAME}", default="out", help="Output directory for created BibTex files.")
+	parser.add_argument("-xd", f"--{EXTRACT_ARG_NAME}", default="extract", help="Directory to write the per-publication-extracted HTML files.")
+	return parser.parse_args()
 
-print("converting")
-# --- convert to utf-8
-for f in files:
-	j = Publication(f)
-	j.write_to_file(f, pretty=True, out_encoding="utf-8")
+def run_main(args: argparse.Namespace):
+	varargs = vars(args)
+	option_file = varargs[OPTIONS_ARG_NAME.replace("-", "_")]
+	input_file = varargs[IN_ARG_NAME.replace("-", "_")]
+	extract_output_dir = varargs[EXTRACT_ARG_NAME.replace("-", "_")]
+	bibtex_output_dir = varargs[OUT_ARG_NAME.replace("-", "_")]
 
-print("finished extracting and converting")
+	# --- extract publications to own html
+	print("extracting")
+	input_file = ExtractPublications.extract_text(
+		input_file, extract_output_dir, [1, 2], delete_existing=True)
 
-# init options
-options = BinderOptions("binding_prototype.txt")
+	print("converting")
+	# --- convert to utf-8
+	for f in input_file:
+		j = Publication(f)
+		j.write_to_file(f, pretty=True, out_encoding="utf-8")
 
-# init filename to file map
-filename_to_file = {
-	path_and_name[:path_and_name.rfind(".")].removeprefix(extract_output_dir + "\\"): path_and_name
-	for path_and_name in files
-}
+	print("finished extracting and converting")
 
-# remove output directory
-Files.delete_folder(bibtex_output_dir)
+	# init options
+	options = BinderOptions(option_file)
 
-# do binding and write bibtex for each file defined in options
-for name in options.individual_opts.keys():
-	if (name not in filename_to_file.keys()):
-		continue
-	
-	file_path = filename_to_file[name]
+	# init filename to file map
+	filename_to_file = {
+		path_and_name[:path_and_name.rfind(".")].removeprefix(extract_output_dir + "\\"): path_and_name
+		for path_and_name in input_file
+	}
 
-	testpub = Publication(file_path, "utf-8")
-	log_output = f"{bibtex_output_dir}/{name}"
-	testpub_binder = PublicationBinder(testpub, options, log_output)
-	btx = testpub_binder.get_bibtex()
+	# remove output directory
+	Files.delete_folder(bibtex_output_dir)
 
-	# --- write bibtex
-	writer = BibtexWriter(bibtex_output_dir, options)
-	writer.write_bibtex_to_file(testpub.get_filename(with_extension=False), btx)
+	# do binding and write bibtex for each file defined in options
+	for name in options.individual_opts.keys():
+		if (name not in filename_to_file.keys()):
+			continue
+		
+		file_path = filename_to_file[name]
 
-print("done")
+		testpub = Publication(file_path, "utf-8")
+		log_output = f"{bibtex_output_dir}/{name}"
+		testpub_binder = PublicationBinder(testpub, options, log_output)
+		btx = testpub_binder.get_bibtex()
+
+		# --- write bibtex
+		writer = BibtexWriter(bibtex_output_dir, options)
+		writer.write_bibtex_to_file(testpub.get_filename(with_extension=False), btx)
+
+	print("done")
+
+def main():
+	args = parse_args()
+	run_main(args)
+
+if __name__ == '__main__':
+	main()
