@@ -11,6 +11,8 @@ OUT_ARG_NAME = "out"
 IN_ARG_NAME = "in"
 EXTRACT_ARG_NAME = "extract-dir"
 SKIP_EXTRACT_ARG_NAME = "skip-extract"
+IN_ENC_ARG = "input-encoding"
+OUT_ENC_ARG = "output-encoding"
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(prog="RegBibEx (RBX)",
@@ -20,6 +22,8 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("-o", f"--{OUT_ARG_NAME}", default="out", help="Output directory for created BibTex files.")
 	parser.add_argument("-xd", f"--{EXTRACT_ARG_NAME}", default="extract", help="Directory to write the per-publication-extracted HTML files.")
 	parser.add_argument("-sx", f"--{SKIP_EXTRACT_ARG_NAME}", action="store_true", help="If this flag is set, extracting files will be skipped. Use if extracted texts are already present to save time.")
+	parser.add_argument("-ie", f"--{IN_ENC_ARG}", default=None, help="Encoding of the input file.")
+	parser.add_argument("-oe", f"--{OUT_ENC_ARG}", default="utf-8", help="Target encoding of the output file.")
 	return parser.parse_args()
 
 def run_main(args: argparse.Namespace):
@@ -29,6 +33,8 @@ def run_main(args: argparse.Namespace):
 	extract_output_dir = varargs[EXTRACT_ARG_NAME.replace("-", "_")]
 	bibtex_output_dir = varargs[OUT_ARG_NAME.replace("-", "_")]
 	skip_extract_and_convert = varargs[SKIP_EXTRACT_ARG_NAME.replace("-", "_")]
+	in_encoding = varargs[IN_ENC_ARG.replace("-", "_")]
+	out_encoding = varargs[OUT_ENC_ARG.replace("-", "_")]
 
 	if (skip_extract_and_convert == False):
 		# --- extract publications to own html
@@ -39,8 +45,8 @@ def run_main(args: argparse.Namespace):
 		print("converting")
 		# --- convert to utf-8
 		for f in input_file:
-			j = Publication(f)
-			j.write_to_file(f, pretty=True, out_encoding="utf-8")
+			j = Publication(f, in_encoding)
+			j.write_to_file(f, pretty=True, out_encoding=out_encoding)
 
 		print("finished extracting and converting")
 

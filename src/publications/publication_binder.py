@@ -28,14 +28,12 @@ class PublicationBinder:
 
 	def __init__(self, publication: Publication, options: BinderOptions, logfile_path_and_name: str = None):
 		"""
-		
 		Parameters:
 			publication: the Publication object to extract data fields from
 			options: the BinderOptions for the binding operation
 			logfile_path_and_name: the path and name (without extension) of the logfile.
 				This file will always be opened in "append" mode.
 		"""
-
 
 		self.publication = publication
 		self.binder_opts = options
