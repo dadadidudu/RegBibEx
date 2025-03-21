@@ -1,3 +1,5 @@
+__version__ = "0.0.0"
+
 from src.writers.bibtex_writer import BibtexWriter
 from src.binding.binder_options import BinderOptions
 from src.publications.publication_binder import PublicationBinder
@@ -24,6 +26,7 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("-sx", f"--{SKIP_EXTRACT_ARG_NAME}", action="store_true", help="If this flag is set, extracting files will be skipped. Use if extracted texts are already present to save time.")
 	parser.add_argument("-ie", f"--{IN_ENC_ARG}", default=None, help="Encoding of the input file.")
 	parser.add_argument("-oe", f"--{OUT_ENC_ARG}", default="utf-8", help="Target encoding of the output file.")
+	parser.add_argument("--version", action="version", version=f"%(prog)s : Version {__version__}")
 	return parser.parse_args()
 
 def run_main(args: argparse.Namespace):
@@ -84,5 +87,5 @@ def main():
 	args = parse_args()
 	run_main(args)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	main()
