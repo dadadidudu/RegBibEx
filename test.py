@@ -1,4 +1,4 @@
-from src.publications.bibtex_writer import BibtexWriter
+from src.writers.bibtex_writer import BibtexWriter
 from src.binding.binder_options import BinderOptions
 from src.publications.publication_binder import PublicationBinder
 from src.publications.extract_publications import ExtractPublications

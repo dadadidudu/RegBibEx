@@ -1,6 +1,6 @@
 import re
 from ..binding.binder_options import BinderOptions
-from .bibtex import Bibtex
+from ..publications.bibtex import Bibtex
 from ..files import Files
 
 ENTRYTYPE_OPTION_KEY = "entrytype"
