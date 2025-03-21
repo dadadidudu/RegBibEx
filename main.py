@@ -10,6 +10,7 @@ OPTIONS_ARG_NAME = "options"
 OUT_ARG_NAME = "out"
 IN_ARG_NAME = "in"
 EXTRACT_ARG_NAME = "extract-dir"
+SKIP_EXTRACT_ARG_NAME = "skip-extract"
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(prog="RegBibEx (RBX)",
@@ -18,6 +19,7 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("-i", f"--{IN_ARG_NAME}", "--input", default="input/ucb_2024.htm", help="Input (HTML) file to extract.")
 	parser.add_argument("-o", f"--{OUT_ARG_NAME}", default="out", help="Output directory for created BibTex files.")
 	parser.add_argument("-xd", f"--{EXTRACT_ARG_NAME}", default="extract", help="Directory to write the per-publication-extracted HTML files.")
+	parser.add_argument("-sx", f"--{SKIP_EXTRACT_ARG_NAME}", action="store_true", help="If this flag is set, extracting files will be skipped. Use if extracted texts are already present to save time.")
 	return parser.parse_args()
 
 def run_main(args: argparse.Namespace):
@@ -26,19 +28,21 @@ def run_main(args: argparse.Namespace):
 	input_file = varargs[IN_ARG_NAME.replace("-", "_")]
 	extract_output_dir = varargs[EXTRACT_ARG_NAME.replace("-", "_")]
 	bibtex_output_dir = varargs[OUT_ARG_NAME.replace("-", "_")]
+	skip_extract_and_convert = varargs[SKIP_EXTRACT_ARG_NAME.replace("-", "_")]
 
-	# --- extract publications to own html
-	print("extracting")
-	input_file = ExtractPublications.extract_text(
-		input_file, extract_output_dir, [1, 2], delete_existing=True)
+	if (skip_extract_and_convert == False):
+		# --- extract publications to own html
+		print("extracting")
+		input_file = ExtractPublications.extract_text(
+			input_file, extract_output_dir, [1, 2], delete_existing=True)
 
-	print("converting")
-	# --- convert to utf-8
-	for f in input_file:
-		j = Publication(f)
-		j.write_to_file(f, pretty=True, out_encoding="utf-8")
+		print("converting")
+		# --- convert to utf-8
+		for f in input_file:
+			j = Publication(f)
+			j.write_to_file(f, pretty=True, out_encoding="utf-8")
 
-	print("finished extracting and converting")
+		print("finished extracting and converting")
 
 	# init options
 	options = BinderOptions(option_file)
