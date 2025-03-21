@@ -1,4 +1,4 @@
-__version__ = "0.0.0"
+__version__ = "1.0.0"
 
 from src.writers.bibtex_writer import BibtexWriter
 from src.binding.binder_options import BinderOptions
