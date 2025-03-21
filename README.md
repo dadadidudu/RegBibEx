@@ -12,6 +12,12 @@ The current use-case is to extract BibTex information for as many publications a
 [website of the COPIUS project](https://copius.univie.ac.at/tools.php).
 This document has been exported to HTML from Microsoft Word. Both the original HTML file as well as the exported HTML file are supplied in this repository.
 
+### Motivation
+
+This project was realised during the course "Digitales und Quantitatives Arbeiten" (Digital and Quantitative Studies) in the winter term 2024 at the Institute for Finno-Ugric Studies, University of Vienna.
+
+Dieses Projekt entstand im Rahmen der LVA "Digitales und Quantitatives Arbeiten" im WS24 am Institut für Finno-Ugristik, Universität Wien.
+
 ## Quickstart guide
 
 1. Clone this repository: ``git clone https://github.com/dadadidudu/digiquant_FU.git``
@@ -154,9 +160,3 @@ __Possible solution__: It might be possible to concatenate these HTML sub-tags w
 The selection of the "most plausible" result, if multiple RegEx are defined for the same HTML selector, is currently **very** heuristic and dependent on the quality of the regular expression. Currently it chooses the first object with the highest number of found variables.
 
 This can maybe be improved in the future.
-
-## Further information
-
-This project was realised during the course "Digitales und Quantitatives Arbeiten" (Digital and Quantitative Studies) in the winter term 2024 at the Institute for Finno-Ugric Studies, University of Vienna.
-
-Dieses Projekt entstand im Rahmen der LVA "Digitales und Quantitatives Arbeiten" im WS24 am Institut für Finno-Ugristik, Universität Wien.
