@@ -9,6 +9,7 @@
 			"type": "debugpy",
 			"request": "launch",
 			"program": "main.py",
+			"args": ["example_options.txt"],
 			"console": "integratedTerminal",
 			"justMyCode": false
 		}

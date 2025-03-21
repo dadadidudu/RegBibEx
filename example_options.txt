@@ -1,0 +1,26 @@
+options:
+	replace:–=-,�=-,�=ß
+	flags:gm
+defaults:
+	entrytype:article
+	citekey:TITLE
+	YEAR:\d{4}
+	ADDRESS:.*
+	JOURNAL:.*
+	TITLE:.*
+	AUTHOR:.*
+3:
+	+h1.a.span:{{JOURNAL}}
+	h2.span:(\d+\. ){{[A-Z]\S* [A-Z]\S* as AUTHOR}} {{[A-Z ]* as TITLE}}, {{ADDRESS}} {{YEAR}}
+	h2.span:(\d+\. ){{[^/]*\. [^/]*, [^/]* as TITLE}}, {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. ){{.*/.*! as TITLE}} {{ADDRESS}} {{YEAR}}( \(Koostaja {{.* as AUTHOR}}\))?
+	h2.span:(\d+\. ){{[A-Z][a-zä]+ [A-Z][a-zä]+ as AUTHOR}} {{.* / .* as TITLE}}, {{ADDRESS}} {{YEAR}}
+	h2.span:\d+\.{{.* as TITLE}}, {{ADDRESS}} ?\d+\.-\d+\.\d+\.{{YEAR}}\.
+4:
+	entrytype:article
+	citekey:TITLE
+	+h1.a.span:{{JOURNAL}}
+	p.span:\d. {{TITLE}} - ?{{.*? as ADDRESS}}, {{\d{4} as YEAR}}
+5:
+	+h1.a.span:{{JOURNAL}}
+	p.span:\d. ?(\(\d\))? {{AUTHOR}}: {{TITLE}} - ?{{.*? as ADDRESS}}, {{\d{4} as YEAR}}

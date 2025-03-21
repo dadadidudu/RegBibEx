@@ -5,5 +5,7 @@ __pycache__
 pyvenv.cfg
 *.pyc
 
-journals
+journals*
+extract*
+out
 body.html
