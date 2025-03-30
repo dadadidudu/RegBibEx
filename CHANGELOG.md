@@ -6,11 +6,8 @@
 * using ``os.path`` now insstead of hardcoded seperators
 * ``-sx`` / ``--skip-extract`` argument now works correctly
 * added examples for command-line arguments in VSCode launch config
+* example options file rename
 
-## 1.0.1
-
-* only removed some internal files
-
-## 1.0.0
+## 1.0
 
 * initial release
