@@ -15,7 +15,7 @@ IN_ARG_NAME = "input"
 EXTRACT_ARG_NAME = "extract-dir"
 SKIP_EXTRACT_ARG_NAME = "skip-extract"
 IN_ENC_ARG = "input-encoding"
-OUT_ENC_ARG = "output-encoding"
+EXTRACT_ENC_ARG = "extract-encoding"
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(prog="RegBibEx (RBX)",
@@ -26,7 +26,7 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("-xd", f"--{EXTRACT_ARG_NAME}", default="extract", help="Directory to write the per-publication-extracted HTML files. Default: \"extract\"")
 	parser.add_argument("-sx", f"--{SKIP_EXTRACT_ARG_NAME}", action="store_true", help=f"If this flag is set, extracting files will be skipped. Use if extracted texts are already present in the directory given with -xd/--{EXTRACT_ARG_NAME} to save time on later script runs.")
 	parser.add_argument("-ie", f"--{IN_ENC_ARG}", default=None, help="Encoding of the HMTL input file. Default: unspecified")
-	parser.add_argument("-oe", f"--{OUT_ENC_ARG}", default="utf-8", help="Target encoding of the extraction output file. Default:\"utf-8\"")
+	parser.add_argument("-xe", f"--{EXTRACT_ENC_ARG}", default="utf-8", help=f"Target encoding of the extraction output file(s). Note: If the flag '-sx/--{SKIP_EXTRACT_ARG_NAME}' is supplied, this will be the encoding with which the binding input files will be read. Default:\"utf-8\"")
 	parser.add_argument("--version", action="version", version=f"%(prog)s : Version {__version__}")
 	return parser.parse_args()
 
@@ -38,7 +38,7 @@ def run_main(args: argparse.Namespace):
 	bibtex_output_dir = varargs[OUT_ARG_NAME.replace("-", "_")]
 	skip_extract_and_convert = varargs[SKIP_EXTRACT_ARG_NAME.replace("-", "_")]
 	in_encoding = varargs[IN_ENC_ARG.replace("-", "_")]
-	out_encoding = varargs[OUT_ENC_ARG.replace("-", "_")]
+	extractfiles_encoding = varargs[EXTRACT_ENC_ARG.replace("-", "_")]
 
 	extracted_files: list[str] = []
 
@@ -52,7 +52,7 @@ def run_main(args: argparse.Namespace):
 		# --- convert to utf-8
 		for f in extracted_files:
 			j = Publication(f, in_encoding)
-			j.write_to_file(f, pretty=True, out_encoding=out_encoding)
+			j.write_to_file(f, pretty=True, out_encoding=extractfiles_encoding)
 
 		print("finished extracting and converting")
 	else:
@@ -82,7 +82,7 @@ def run_main(args: argparse.Namespace):
 		
 		file_path = filename_to_file[name]
 
-		publication = Publication(file_path, "utf-8") # utf-8 hardcoded here as we're using it internally as "working encoding", maybe change?
+		publication = Publication(file_path, extractfiles_encoding) # utf-8 hardcoded here as we're using it internally as "working encoding", maybe change?
 		log_output = f"{bibtex_output_dir}/{name}"
 		testpub_binder = PublicationBinder(publication, options, log_output)
 		btx = testpub_binder.get_bibtex()
