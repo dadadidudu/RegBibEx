@@ -5,11 +5,29 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python Debugger:main",
+			"name": "extract+bind",
 			"type": "debugpy",
 			"request": "launch",
 			"program": "main.py",
-			"args": ["example_options.txt"],
+			"args": ["example_options.txt", "-i", "input/ucb_2024.htm"],
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "print help",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "main.py",
+			"args": ["--help"],
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "bind only, skip extract",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "main.py",
+			"args": ["example_options.txt", "-i", "input/ucb_2024.htm", "-sx"],
 			"console": "integratedTerminal",
 			"justMyCode": false
 		}
