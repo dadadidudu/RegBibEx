@@ -31,6 +31,7 @@ class ExtractPublications:
         of the given publication HTML input file (path, name, ext) to the given output path.
         Optionally ignores the publications at the given ignore indices,
         and optionally deletes the existing output path (and all of its contents), if it exists.
+        Returns a list of all the files created.
         '''
 
         body: str = ""

@@ -12,7 +12,7 @@ class Files:
 				filepath = os.path.join(root, f)
 				os.remove(filepath)
 		os.removedirs(path)
-		print(f"removed {path}")
+		print(f"removed folder: {path}")
 		
 	@staticmethod
 	def write_file(path: str, name: str, content: str, encoding = "utf-8") -> None:
