@@ -24,13 +24,13 @@ Dieses Projekt entstand im Rahmen der LVA "Digitales und Quantitatives Arbeiten"
 2. Switch to the folder you just cloned into: ``cd RegBibEx``
 3. (optional, only if you want to use a python env) create environment: ``python3 -m venv .env``
 4. Install dependencies: ``pip install -r requirements.txt``
-5. Create an options file, file type can be any plaintext format. (See [next section](#defining-an-options-file) for defining the options file. See ``example_options.txt`` for an example file.)
-6. Run program, supplying the options file as argument: ``py main.py example_options.txt``
+5. Create an options file, file type can be any plaintext format. (See [next section](#defining-an-options-file) for defining the options file. See ``rbx_options.txt`` for an example file.)
+6. Run program, supplying the options file as argument: ``py main.py rbx_options.txt``
 7. For further options, run the program with the help flag: ``py main.py --help``
 
 ## Options
 
-See ``example_options.txt`` for an example file.
+See ``rbx_options.txt`` for an example file.
 
 ### Defining an options file
 

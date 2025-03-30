@@ -9,7 +9,7 @@
 			"type": "debugpy",
 			"request": "launch",
 			"program": "main.py",
-			"args": ["example_options.txt", "-i", "input/ucb_2024.htm"],
+			"args": ["rbx_options.txt", "-i", "input/ucb_2024.htm"],
 			"console": "integratedTerminal",
 			"justMyCode": false
 		},
@@ -27,7 +27,7 @@
 			"type": "debugpy",
 			"request": "launch",
 			"program": "main.py",
-			"args": ["example_options.txt", "-i", "input/ucb_2024.htm", "-sx"],
+			"args": ["rbx_options.txt", "-i", "input/ucb_2024.htm", "-sx"],
 			"console": "integratedTerminal",
 			"justMyCode": false
 		}
