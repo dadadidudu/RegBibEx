@@ -20,8 +20,8 @@ Dieses Projekt entstand im Rahmen der LVA "Digitales und Quantitatives Arbeiten"
 
 ## Quickstart guide
 
-1. Clone this repository: ``git clone https://github.com/dadadidudu/digiquant_FU.git``
-2. Switch to the folder you just cloned into: ``cd digiquant_FU``
+1. Clone this repository: ``git clone https://github.com/dadadidudu/RegBibEx.git``
+2. Switch to the folder you just cloned into: ``cd RegBibEx``
 3. (optional, only if you want to use a python env) create environment: ``python3 -m venv .env``
 4. Install dependencies: ``pip install -r requirements.txt``
 5. Create an options file, file type can be any plaintext format. (See [next section](#defining-an-options-file) for defining the options file. See ``example_options.txt`` for an example file.)
